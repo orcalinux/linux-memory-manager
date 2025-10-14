@@ -1,16 +1,16 @@
-@page dev_guide Developer Guide
+# Developer Guide
 
-@tableofcontents
+@brief Developer guide for understanding and contributing to the Linux Memory Manager.
 
-@section dev_intro Introduction for Developers
+## Introduction for Developers
 
-This guide is for developers who want to **understand**, **modify**, or **contribute** to the Linux Memory Manager project. If you just want to use the library, see the @ref user_guide instead.
+This guide is for developers who want to **understand**, **modify**, or **contribute** to the Linux Memory Manager project. If you just want to use the library, see the [User Guide](user_guide.md) instead.
 
 ---
 
-@section dev_setup Development Setup
+## Development Setup
 
-@subsection dev_requirements Requirements
+### Requirements
 
 - **GCC 7.0+** - C compiler with C11 support
 - **GNU Make** - Build automation
@@ -19,32 +19,29 @@ This guide is for developers who want to **understand**, **modify**, or **contri
 - **Graphviz** - Diagram generation (optional)
 - **Valgrind** - Memory leak detection (optional)
 
-@subsection dev_clone Clone Repository
+### Clone Repository
 
-@code{.sh}
+```sh
 git clone https://github.com/orcalinux/linux-memory-manager.git
 cd linux-memory-manager
-@endcode
+```
 
-@subsection dev_build Build Everything
+### Build Everything
 
-@code{.sh}
-
+```sh
 # Build all targets
-
 make all
 
 # Or build individually
-
 make static # Build static library only
 make shared # Build shared library only
-@endcode
+```
 
 ---
 
-@section dev_architecture Architecture Overview
+## Architecture Overview
 
-@subsection arch_components Core Components
+### Core Components
 
 The memory manager consists of several key components:
 
@@ -71,63 +68,40 @@ The memory manager consists of several key components:
    - Enables dynamic type registration
    - Used by XCALLOC/XFREE macros
 
-@subsection arch_memory_model Memory Model
+### Memory Model
 
-@code
-┌─────────────────────────────────────────────┐
-│ Kernel Virtual Memory │
-└─────────────────────────────────────────────┘
-↓
-┌──────────────────┐
-│ VM Page (4KB) │
-└──────────────────┘
-↓
-┌────────────────────────────────┐
-│ Block Meta Data | Data Block │
-│ Block Meta Data | Data Block │
-│ Block Meta Data | Data Block │
-│ ... │
-└────────────────────────────────┘
-@endcode
+\image html ../assets/images/Memory_Model.svg "Memory Model"
 
 ---
 
-@section dev_code_structure Code Organization
+## Code Organization
 
-@subsection structure_files File Organization
+### File Organization
 
-@code
+```
 src/
-├── memory_manager.c # Core memory management
-├── glthread.c # Linked list implementation
-├── datatype_size_lookup.c # Type size registry
-├── parse_datatype.c # Type name parsing
-└── memory_manager_test.c # Test suite
+├── memory_manager.c           # Core memory management
+├── glthread.c                 # Linked list implementation
+├── datatype_size_lookup.c     # Type size registry
+├── parse_datatype.c           # Type name parsing
+└── memory_manager_test.c      # Test suite
 
 include/
-├── memory_manager_api.h # Public API (users include this)
-├── memory_manager.h # Internal structures
-├── glthread.h # GLThread API
-├── datatype_size_lookup.h # Type registry API
-├── parse_datatype.h # Parser API
-└── colors.h # Terminal output utilities
-@endcode
+├── memory_manager_api.h       # Public API (users include this)
+├── memory_manager.h           # Internal structures
+├── glthread.h                 # GLThread API
+├── datatype_size_lookup.h     # Type registry API
+├── parse_datatype.h           # Parser API
+└── colors.h                   # Terminal output utilities
+```
 
-@subsection structure_headers Header Dependencies
+### Header Dependencies
 
-@code
-memory_manager_api.h (PUBLIC API)
-↓
-memory_manager.h (INTERNAL)
-↓
-glthread.h (DATA STRUCTURES)
-@endcode
+\image html ../assets/images/Header_Dependencies.svg "Header Dependencies"
 
----
+## Building & Testing
 
-@section dev_building Building & Testing
-
-@subsection dev_make_targets Makefile Targets
+### Makefile Targets
 
 | Target           | Description                      |
 | ---------------- | -------------------------------- |
@@ -139,50 +113,57 @@ glthread.h (DATA STRUCTURES)
 | `make doc`       | Generate Doxygen documentation   |
 | `make clean_doc` | Remove generated documentation   |
 
-@subsection dev_testing Testing
+### Testing
 
 **Run the test suite:**
-@code{.sh}
+
+```sh
 ./bin/hmm
-@endcode
+```
 
 **Run with Valgrind (detect memory leaks):**
-@code{.sh}
+
+```sh
 valgrind --leak-check=full --show-leak-kinds=all ./bin/hmm
-@endcode
+```
 
 **Run with AddressSanitizer:**
-@code{.sh}
-gcc -fsanitize=address -g src/\*.c -o bin/hmm_asan
+
+```sh
+gcc -fsanitize=address -g src/*.c -o bin/hmm_asan
 ./bin/hmm_asan
-@endcode
+```
 
 ---
 
-@section dev_contributing Contributing
+## Contributing
 
-@subsection contrib_workflow Contribution Workflow
+### Contribution Workflow
 
 1. **Fork the repository** on GitHub
+
 2. **Create a feature branch:**
-   @code{.sh}
+
+   ```sh
    git checkout -b feature/my-new-feature
-   @endcode
+   ```
 
 3. **Make your changes** and commit:
-   @code{.sh}
+
+   ```sh
    git add .
    git commit -m "Add new feature: description"
-   @endcode
+   ```
 
 4. **Push to your fork:**
-   @code{.sh}
+
+   ```sh
    git push origin feature/my-new-feature
-   @endcode
+   ```
 
 5. **Open a Pull Request** on GitHub
 
-@subsection contrib_guidelines Coding Guidelines
+### Coding Guidelines
 
 **Style Rules:**
 
@@ -193,29 +174,30 @@ gcc -fsanitize=address -g src/\*.c -o bin/hmm_asan
 - Add Doxygen comments for all public functions
 
 **Example:**
-@code{.c}
-/\*\*
 
-- @brief Allocate a block of memory
--
-- @param size Size in bytes to allocate
-- @return Pointer to allocated memory, or NULL on failure
-  _/
-  void_ mm_allocate(size_t size) {
-  // Implementation
-  }
-  @endcode
+```c
+/**
+ * @brief Allocate a block of memory
+ *
+ * @param size Size in bytes to allocate
+ * @return Pointer to allocated memory, or NULL on failure
+ */
+void* mm_allocate(size_t size) {
+    // Implementation
+}
+```
 
-@subsection contrib_commit Commit Messages
+### Commit Messages
 
 Follow this format:
-@code
+
+```
 <type>: <subject>
 
 <body>
 
 <footer>
-@endcode
+```
 
 **Types:**
 
@@ -227,59 +209,62 @@ Follow this format:
 - `chore:` Maintenance tasks
 
 **Example:**
-@code
+
+```text
 feat: Add memory fragmentation analysis
 
 Implement mm_get_fragmentation_ratio() to analyze internal
 fragmentation across all page families.
 
 Closes #42
-@endcode
+```
 
 ---
 
-@section dev_debugging Debugging
+## Debugging
 
-@subsection debug_symbols Build with Debug Symbols
+### Build with Debug Symbols
 
-@code{.sh}
-gcc -g -O0 src/\*.c -o bin/hmm_debug
+```sh
+gcc -g -O0 src/*.c -o bin/hmm_debug
 gdb bin/hmm_debug
-@endcode
+```
 
-@subsection debug_memory Memory Debugging
+### Memory Debugging
 
 **Enable verbose output:**
-@code{.c}
+
+```c
 #define MM_DEBUG 1
-@endcode
+```
 
 **Print memory state:**
-@code{.c}
+
+```c
 mm_print_registered_page_families();
 mm_print_memory_usage(MyStruct);
 mm_print_vm_page_details();
-@endcode
+```
 
 ---
 
-@section dev_advanced Advanced Topics
+## Advanced Topics
 
-@subsection adv_glthread Understanding GLThread
+### Understanding GLThread
 
 GLThread is an intrusive linked list implementation. Each structure contains the list node:
 
-@code{.c}
+```c
 typedef struct {
-int data;
-glthread_t list_node; // Intrusive list node
+    int data;
+    glthread_t list_node;  // Intrusive list node
 } MyStruct;
 
 // Convert from list node to structure
-MyStruct \*s = GLTHREAD_TO_STRUCT(node, MyStruct, list_node);
-@endcode
+MyStruct *s = GLTHREAD_TO_STRUCT(node, MyStruct, list_node);
+```
 
-@subsection adv_page_families Page Families
+### Page Families
 
 Each data type gets its own "page family":
 
@@ -287,50 +272,51 @@ Each data type gets its own "page family":
 - Each page is divided into fixed-size blocks
 - Free blocks are tracked in a priority list
 
-@subsection adv_block_meta Block Metadata
+### Block Metadata
 
 Each allocated block has metadata:
-@code{.c}
+
+```c
 typedef struct {
-bool is*free;
-uint32_t block_size;
-uint32_t offset;
-glthread_t priority_thread_glue;
-struct vm_page* \*vm_page;
+    bool is_free;
+    uint32_t block_size;
+    uint32_t offset;
+    glthread_t priority_thread_glue;
+    struct vm_page* *vm_page;
 } block_meta_data_t;
-@endcode
+```
 
 ---
 
-@section dev_extending Extending the Library
+## Extending the Library
 
-@subsection ext_custom_allocator Custom Allocators
+### Custom Allocators
 
 You can implement custom allocation strategies:
 
-@code{.c}
-void\* my_custom_alloc(size_t size) {
-// Custom allocation logic
-return mm_allocate_free_data_block(family);
+```c
+void* my_custom_alloc(size_t size) {
+    // Custom allocation logic
+    return mm_allocate_free_data_block(family);
 }
-@endcode
+```
 
-@subsection ext_hooks Memory Hooks
+### Memory Hooks
 
 Add callbacks for allocation/deallocation events:
 
-@code{.c}
-void on_alloc(void \*ptr, size_t size) {
-printf("Allocated %zu bytes at %p\\n", size, ptr);
+```c
+void on_alloc(void *ptr, size_t size) {
+    printf("Allocated %zu bytes at %p\n", size, ptr);
 }
-@endcode
+```
 
 ---
 
-@section dev_resources Resources
+## Resources
 
-- @ref api_reference "API Reference" - Complete function documentation
-- @ref arch_overview "Architecture" - System design details
-- @ref testing_guide "Testing Guide" - How to write and run tests
+- [API Reference](api_reference.md) - Complete function documentation
+- [Architecture](architecture.md) - System design details
+- [Testing Guide](user_guide.md) - How to write and run tests
 - [GitHub Repository](https://github.com/orcalinux/linux-memory-manager)
 - [Issue Tracker](https://github.com/orcalinux/linux-memory-manager/issues)

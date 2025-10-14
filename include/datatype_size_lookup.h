@@ -1,3 +1,10 @@
+/****************************************************************/
+/******* Author    : Mahmoud Abdelraouf Mahmoud *****************/
+/******* Date      : 8 Apr 2023                 *****************/
+/******* Version   : 0.1                        *****************/
+/******* File Name : datatype_size_lookup.h     *****************/
+/****************************************************************/
+
 /**
  * @file datatype_size_lookup.h
  * @brief Header file for data type size lookup functionality and mappings.
@@ -33,4 +40,3 @@
 size_t get_size_of_datatype(const char *data_type);
 
 #endif /**< DATATYPE_SIZE_LOOKUP_H_ */
-

@@ -2,7 +2,7 @@
 /******* Author    : Mahmoud Abdelraouf Mahmoud    *****************/
 /******* Date      : 13 Apr 2023                   *****************/
 /******* Version   : 0.1                           *****************/
-/******* File Name : Generic Linked List Thread.h  *****************/
+/******* File Name : glthread.h                    *****************/
 /*******************************************************************/
 
 /**
@@ -25,7 +25,8 @@
  * This structure defines a generic linked list node for threaded linking.
  * It consists of left and right pointers for threading the nodes together.
  */
-typedef struct glthread_ {
+typedef struct glthread_
+{
   struct glthread_ *left;  /**< Pointer to the left node in the linked list. */
   struct glthread_ *right; /**< Pointer to the right node in the linked list. */
 } glthread_t;
@@ -138,7 +139,7 @@ void *glthread_search(glthread_t *base_glthread,
  * linked list.
  * @return int Returns 1 if the linked list is empty, 0 otherwise.
  */
-#define IS_GLTHREAD_LIST_EMPTY(glthreadptr)                                    \
+#define IS_GLTHREAD_LIST_EMPTY(glthreadptr) \
   ((glthreadptr)->right == 0 && (glthreadptr)->left == 0)
 
 /**
@@ -169,10 +170,11 @@ void *glthread_search(glthread_t *base_glthread,
  * pointers to `block_meta_data_t` pointers and access the metadata associated
  * with memory blocks.
  */
-#define GLTHREAD_TO_STRUCT(fn_name, structure_name, field_name, glthreadptr)   \
-  static inline structure_name *fn_name(glthread_t *glthreadptr) {             \
-    return (structure_name *)((char *)(glthreadptr) -                          \
-                              (char *)&(((structure_name *)0)->field_name));   \
+#define GLTHREAD_TO_STRUCT(fn_name, structure_name, field_name, glthreadptr) \
+  static inline structure_name *fn_name(glthread_t *glthreadptr)             \
+  {                                                                          \
+    return (structure_name *)((char *)(glthreadptr) -                        \
+                              (char *)&(((structure_name *)0)->field_name)); \
   }
 
 /**
@@ -201,11 +203,12 @@ void *glthread_search(glthread_t *base_glthread,
  * @param glthreadptr Pointer to the current glthread_t structure being
  * iterated.
  */
-#define ITERATE_GLTHREAD_BEGIN(glthreadptrstart, glthreadptr)                  \
-  {                                                                            \
-    glthread_t *_glthread_ptr = NULL;                                          \
-    glthreadptr = BASE(glthreadptrstart);                                      \
-    for (; glthreadptr != NULL; glthreadptr = _glthread_ptr) {                 \
+#define ITERATE_GLTHREAD_BEGIN(glthreadptrstart, glthreadptr) \
+  {                                                           \
+    glthread_t *_glthread_ptr = NULL;                         \
+    glthreadptr = BASE(glthreadptrstart);                     \
+    for (; glthreadptr != NULL; glthreadptr = _glthread_ptr)  \
+    {                                                         \
       _glthread_ptr = (glthreadptr)->right;
 
 /**
@@ -219,8 +222,8 @@ void *glthread_search(glthread_t *base_glthread,
  * @param glthreadptr Pointer to the current glthread_t structure being
  * iterated.
  */
-#define ITERATE_GLTHREAD_END(glthreadptrstart, glthreadptr)                    \
-  }                                                                            \
+#define ITERATE_GLTHREAD_END(glthreadptrstart, glthreadptr) \
+  }                                                         \
   }
 
 /**
@@ -237,7 +240,7 @@ void *glthread_search(glthread_t *base_glthread,
  * structure.
  * @return Pointer to the user-defined data.
  */
-#define GLTHREAD_GET_USER_DATA_FROM_OFFSET(glthreadptr, offset)                \
-  (void *)((char *)(glthreadptr)-offset)
+#define GLTHREAD_GET_USER_DATA_FROM_OFFSET(glthreadptr, offset) \
+  (void *)((char *)(glthreadptr) - offset)
 
 #endif /**< GLUETHREAD_H_ */

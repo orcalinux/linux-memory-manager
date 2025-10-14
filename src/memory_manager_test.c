@@ -2,7 +2,7 @@
 /******* Author    : Mahmoud Abdelraouf Mahmoud *****************/
 /******* Date      : 8 Apr 2023                 *****************/
 /******* Version   : 0.1                        *****************/
-/******* File Name : MemeoryManager.c           *****************/
+/******* File Name : memory_manager_test.c      *****************/
 /****************************************************************/
 
 /**
@@ -27,7 +27,8 @@
  * This structure defines the attributes of an employee, including their name
  * and employee ID.
  */
-typedef struct emp_ {
+typedef struct emp_
+{
   char name[32];   /**< The name of the employee. */
   uint32_t emp_id; /**< The employee ID. */
 } emp_t;
@@ -39,7 +40,8 @@ typedef struct emp_ {
  * roll number, and subject marks. Additionally, it contains a pointer to the
  * next student in a linked list.
  */
-typedef struct student_ {
+typedef struct student_
+{
   char name[32];         /**< The name of the student. */
   uint32_t roll_no;      /**< The roll number of the student. */
   uint32_t marks_phys;   /**< The marks obtained in Physics. */
@@ -57,10 +59,16 @@ typedef struct student_ {
  *
  * @param argc The number of command-line arguments.
  * @param argv An array of command-line arguments.
+ * @brief Main function for testing the memory manager.
+ *
+ * This function initializes the memory manager, registers structures, performs
+ * allocations, and prints usage information.
+ *
  * @return An integer indicating the exit status of the program.
  */
 
-int main(void) {
+int main(void)
+{
 
   int wait;
   mm_init();

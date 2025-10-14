@@ -1,5 +1,7 @@
 # Generating Perfect Hash Functions with gperf
 
+@brief Guide to generating perfect hash functions using gperf for efficient lookups.
+
 ## Overview
 
 This guide explains how to use `gperf` to generate perfect hash functions and lookup tables for efficient keyword lookup in C programs.
@@ -40,6 +42,7 @@ gperf -L C -t -N getSizeOfDataType -K name -H hash_function data_type_keywords.t
 ```
 
 Explanation of options:
+
 - `-L C`: Specifies the language to use (C).
 - `-t`: Tells `gperf` to produce a C function table.
 - `-N getSizeOfDataType`: Specifies the name of the lookup function.
@@ -80,4 +83,3 @@ int main() {
 ## Conclusion
 
 By using `gperf` to generate perfect hash functions and lookup tables, you can efficiently perform keyword lookup in your C programs, improving performance compared to linear search algorithms.
-

@@ -2,7 +2,7 @@
 /******* Author    : Mahmoud Abdelraouf Mahmoud *****************/
 /******* Date      : 8 Apr 2023                 *****************/
 /******* Version   : 0.1                        *****************/
-/******* File Name : MemeoryManager.h           *****************/
+/******* File Name : memory_manager.h           *****************/
 /****************************************************************/
 
 /**
@@ -36,7 +36,8 @@
  * states: `VM_TRUE` or `VM_FALSE`. It is used to store boolean values in the
  * program.
  */
-typedef enum {
+typedef enum
+{
   MM_FALSE = 0, /**< Represents the false state. */
   MM_TRUE = 1   /**< Represents the true state. */
 } vm_bool_t;
@@ -49,15 +50,16 @@ typedef enum {
  * its size, pointers to the previous and next blocks (if applicable), and
  * the offset within the memory region.
  */
-typedef struct block_meta_data_ {
+typedef struct block_meta_data_
+{
   vm_bool_t is_free;   /**< Flag indicating whether the block is free. */
   uint32_t block_size; /**< Size of the memory block. */
   uint32_t offset;     /**< Offset within the memory region. */
   struct block_meta_data_
-      *prev_block; /**< Pointer to the previous memory block. */
+      *prev_block;                     /**< Pointer to the previous memory block. */
   struct block_meta_data_ *next_block; /**< Pointer to the next memory block. */
-  glthread_t priority_thread_glue; /**< Priority thread glue for managing block
-                                      priority. */
+  glthread_t priority_thread_glue;     /**< Priority thread glue for managing block
+                                          priority. */
 } block_meta_data_t;
 
 /**
@@ -98,14 +100,15 @@ GLTHREAD_TO_STRUCT(glthread_to_block_meta_data, block_meta_data_t,
  * systems. It contains metadata for managing memory blocks within the page, as
  * well as the actual memory region allocated for storing data blocks.
  */
-typedef struct vm_page_ {
+typedef struct vm_page_
+{
   struct vm_page_ *next; /**< Pointer to the next virtual memory page. */
   struct vm_page_ *prev; /**< Pointer to the previous virtual memory page. */
   struct vm_page_family_
-      *pg_family; /**< Pointer to the page family associated with the page. */
+      *pg_family;                    /**< Pointer to the page family associated with the page. */
   block_meta_data_t block_meta_data; /**< Metadata for managing memory blocks
                                         within the page. */
-  char page_memory[0]; /**< Memory region allocated for storing data blocks. */
+  char page_memory[0];               /**< Memory region allocated for storing data blocks. */
 } vm_page_t;
 
 /**
@@ -115,10 +118,11 @@ typedef struct vm_page_ {
  * including the name of the structure, its size, a pointer to the most recent
  * virtual memory page in use, and a priority list of free memory blocks.
  */
-typedef struct vm_page_family_ {
-  char struct_name[MM_MAX_STRUCT_NAME]; /**< Name of the structure. */
-  uint32_t struct_size;                 /**< Size of the structure. */
-  vm_page_t *first_page; /**< Pointer to the most recent vm page in use. */
+typedef struct vm_page_family_
+{
+  char struct_name[MM_MAX_STRUCT_NAME];     /**< Name of the structure. */
+  uint32_t struct_size;                     /**< Size of the structure. */
+  vm_page_t *first_page;                    /**< Pointer to the most recent vm page in use. */
   glthread_t free_block_priority_list_head; /**< Priority list of free memory
                                                blocks. */
 } vm_page_family_t;
@@ -127,9 +131,10 @@ typedef struct vm_page_family_ {
  * @brief Structure representing a virtual memory page containing families of
  * memory structures.
  */
-typedef struct vm_page_for_families_ {
+typedef struct vm_page_for_families_
+{
   struct vm_page_for_families_
-      *next; /**< Pointer to the next virtual memory page. */
+      *next;                          /**< Pointer to the next virtual memory page. */
   vm_page_family_t vm_page_family[0]; /**< Array of variable size storing memory
                                          structure families. */
 } vm_page_for_families_t;
@@ -261,8 +266,8 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * @note This macro is useful for determining the maximum capacity of a virtual
  * memory page for managing families of memory structures.
  */
-#define MAX_FAMILIES_PER_VM_PAGE                                               \
-  (SYSTEM_PAGE_SIZE - sizeof(struct vm_page_for_families_ *)) /                \
+#define MAX_FAMILIES_PER_VM_PAGE                                \
+  (SYSTEM_PAGE_SIZE - sizeof(struct vm_page_for_families_ *)) / \
       sizeof(struct vm_page_family_)
 
 /**
@@ -294,7 +299,8 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
     for (curr =                                                                \
              (vm_page_family_t *)&vm_page_for_families_ptr->vm_page_family[0]; \
          curr->struct_size && _count < MAX_FAMILIES_PER_VM_PAGE;               \
-         curr++, _count++) {
+         curr++, _count++)                                                     \
+    {
 
 /**
  * @brief Macro marking the end of iteration over families within a virtual
@@ -319,8 +325,8 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  *
  * @see ITERATE_PAGE_FAMILIES_BEGIN
  */
-#define ITERATE_PAGE_FAMILIES_END(vm_page_for_families_ptr, curr)              \
-  }                                                                            \
+#define ITERATE_PAGE_FAMILIES_END(vm_page_for_families_ptr, curr) \
+  }                                                               \
   }
 
 /**
@@ -335,11 +341,12 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * @param curr Pointer variable to hold the current virtual memory page during
  * iteration.
  */
-#define ITERATE_VM_PAGE_BEGIN(vm_page_family_ptr, curr)                        \
-  {                                                                            \
-    curr = (vm_page_family_ptr)->first_page;                                   \
-    vm_page_t *next = NULL;                                                    \
-    for (; curr != NULL; curr = next) {                                        \
+#define ITERATE_VM_PAGE_BEGIN(vm_page_family_ptr, curr) \
+  {                                                     \
+    curr = (vm_page_family_ptr)->first_page;            \
+    vm_page_t *next = NULL;                             \
+    for (; curr != NULL; curr = next)                   \
+    {                                                   \
       next = curr->next;
 
 /**
@@ -351,8 +358,8 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * page.
  * @param curr Pointer variable holding the current virtual memory page.
  */
-#define ITERATE_VM_PAGE_END(vm_page_family_ptr, curr)                          \
-  }                                                                            \
+#define ITERATE_VM_PAGE_END(vm_page_family_ptr, curr) \
+  }                                                   \
   }
 
 /**
@@ -371,11 +378,13 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  *       The iteration begins with the metadata block of the first memory block
  * in the page.
  */
-#define ITERATE_VM_PAGE_ALL_BLOCKS_BEGIN(vm_page_ptr, curr)                    \
-  do {                                                                         \
-    curr = &(vm_page_ptr->block_meta_data);                                    \
-    block_meta_data_t *next = NULL;                                            \
-    for (; curr != NULL; curr = next) {                                        \
+#define ITERATE_VM_PAGE_ALL_BLOCKS_BEGIN(vm_page_ptr, curr) \
+  do                                                        \
+  {                                                         \
+    curr = &(vm_page_ptr->block_meta_data);                 \
+    block_meta_data_t *next = NULL;                         \
+    for (; curr != NULL; curr = next)                       \
+    {                                                       \
       next = NEXT_META_BLOCK(curr);
 
 /**
@@ -392,9 +401,9 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * macro to define the end of the iteration loop. It completes the loop setup by
  * ITERATE_VM_PAGE_ALL_BLOCKS_BEGIN, ensuring proper termination of the loop.
  */
-#define ITERATE_VM_PAGE_ALL_BLOCKS_END(vm_page_ptr, curr)                      \
-  }                                                                            \
-  }                                                                            \
+#define ITERATE_VM_PAGE_ALL_BLOCKS_END(vm_page_ptr, curr) \
+  }                                                       \
+  }                                                       \
   while (0)
 
 /**
@@ -411,7 +420,7 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  *
  * @note This macro uses the pointer arithmetic to calculate the offset.
  */
-#define offset_of(container_structure, field_name)                             \
+#define offset_of(container_structure, field_name) \
   ((size_t)(&((container_structure *)0)->field_name))
 
 /**
@@ -423,7 +432,7 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * @param block_meta_data_ptr Pointer to the block's metadata.
  * @return Pointer to the virtual memory page.
  */
-#define MM_GET_PAGE_FROM_META_BLOCK(block_meta_data_ptr)                       \
+#define MM_GET_PAGE_FROM_META_BLOCK(block_meta_data_ptr) \
   ((void *)((char *)(block_meta_data_ptr) - (block_meta_data_ptr)->offset))
 
 /**
@@ -446,8 +455,8 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * memory layout and block sizes are correctly managed to avoid undefined
  * behavior.
  */
-#define NEXT_META_BLOCK_BY_SIZE(block_meta_data_ptr)                           \
-  ((block_meta_data_t *)((char *)(block_meta_data_ptr + 1) +                   \
+#define NEXT_META_BLOCK_BY_SIZE(block_meta_data_ptr)         \
+  ((block_meta_data_t *)((char *)(block_meta_data_ptr + 1) + \
                          (block_meta_data_ptr)->block_size))
 
 /**
@@ -524,11 +533,12 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * recycling and allocation routines. It helps maintain memory hygiene by
  * properly managing the state of virtual memory pages.
  */
-#define MARK_VM_PAGE_EMPTY(vm_page_t_ptr)                                      \
-  do {                                                                         \
-    (vm_page_t_ptr)->block_meta_data.next_block = NULL;                        \
-    (vm_page_t_ptr)->block_meta_data.prev_block = NULL;                        \
-    (vm_page_t_ptr)->block_meta_data.is_free = MM_TRUE;                        \
+#define MARK_VM_PAGE_EMPTY(vm_page_t_ptr)               \
+  do                                                    \
+  {                                                     \
+    (vm_page_t_ptr)->block_meta_data.next_block = NULL; \
+    (vm_page_t_ptr)->block_meta_data.prev_block = NULL; \
+    (vm_page_t_ptr)->block_meta_data.is_free = MM_TRUE; \
   } while (0)
 
 /**
@@ -547,11 +557,11 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * management of memory blocks, maintaining the coherence of the memory
  * allocation process.
  */
-#define mm_bind_blocks_for_allocation(allocated_meta_block, free_meta_block)   \
-  free_meta_block->prev_block = allocated_meta_block;                          \
-  free_meta_block->next_block = allocated_meta_block->next_block;              \
-  allocated_meta_block->next_block = free_meta_block;                          \
-  if (free_meta_block->next_block)                                             \
+#define mm_bind_blocks_for_allocation(allocated_meta_block, free_meta_block) \
+  free_meta_block->prev_block = allocated_meta_block;                        \
+  free_meta_block->next_block = allocated_meta_block->next_block;            \
+  allocated_meta_block->next_block = free_meta_block;                        \
+  if (free_meta_block->next_block)                                           \
   free_meta_block->next_block->prev_block = free_meta_block
 
 /**
@@ -569,7 +579,7 @@ void mm_print_vm_page_details(vm_page_t *vm_page);
  * that can be allocated for a given number of units, considering system page
  * constraints and structure offsets within the virtual memory page.
  */
-#define MAX_PAGE_ALLOCATABLE_MEMORY(units)                                     \
+#define MAX_PAGE_ALLOCATABLE_MEMORY(units) \
   (mm_max_page_allocatable_memory(units))
 
 //-----------------< Private functions interfacce -----------------/
