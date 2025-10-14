@@ -1,5 +1,4 @@
 ===================================================================
-
 Build artifacts
 ===================================================================
 These are directories and files created by your Makefile.
@@ -25,14 +24,16 @@ These lines are for extra safety.
 *.so
 *.dll
 *.dylib
-===================================================================
-Documentation
-===================================================================
-Ignore the directory where Doxygen generates the HTML output.
-We chose 'html/' as the modern standard. I've also included
-the old path from your Makefile's clean rule.
+# ===================================================================
+# Documentation
+# ===================================================================
+# Ignore the directory where Doxygen generates the HTML output.
+# We chose 'html/' as the modern standard. I've also included
+# the old path from your Makefile's clean rule.
 
 html/
+latex/
+man/
 docs/doxygen_output/
 ===================================================================
 IDE / Editor Configuration Files

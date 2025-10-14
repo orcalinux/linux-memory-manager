@@ -1,4 +1,4 @@
-.TH "include/memory_manager_api.h" 3 "Sun Oct 12 2025" "Linux Memeory Manager" \" -*- nroff -*-
+.TH "include/memory_manager_api.h" 3 "Linux Memory Manager" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -201,7 +201,7 @@ This function should be invoked after the application has performed registration
 .RE
 .PP
 
-.SS "void* xcalloc (char * struct_name, int units)"
+.SS "void * xcalloc (char * struct_name, int units)"
 
 .PP
 Allocates and initializes memory for an array of structures\&. This function allocates memory for an array of structures of the specified type and initializes the memory to zero\&. It first looks up the page family associated with the specified structure name to determine the size of the structure\&. Then, it checks if the requested memory size exceeds the maximum allocatable memory per page\&. If the allocation is successful, it initializes the allocated memory to zero and returns a pointer to the allocated memory\&.
@@ -237,4 +237,4 @@ Frees memory allocated by the memory manager\&. This function is used to free me
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Linux Memeory Manager from the source code\&.
+Generated automatically by Doxygen for Linux Memory Manager from the source code\&.

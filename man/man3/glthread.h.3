@@ -1,4 +1,4 @@
-.TH "include/glthread.h" 3 "Sun Oct 12 2025" "Linux Memeory Manager" \" -*- nroff -*-
+.TH "include/glthread.h" 3 "Linux Memory Manager" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -128,19 +128,19 @@ Macro to get a pointer to user-defined data from a glthread_t pointer and offset
 .PP
 \fBReturns\fP
 .RS 4
-Pointer to the user-defined data\&. GLUETHREAD_H_ 
+Pointer to the user-defined data\&. 
 .RE
 .PP
 
 .SS "#define GLTHREAD_TO_STRUCT(fn_name, structure_name, field_name, glthreadptr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  static inline structure_name *fn_name(glthread_t *glthreadptr) {             \
-    return (structure_name *)((char *)(glthreadptr) -                          \
-                              (char *)&(((structure_name *)0)->field_name));   \
+  static inline structure_name *fn_name(glthread_t *glthreadptr) {             \\
+    return (structure_name *)((char *)(glthreadptr) \-                          \\
+                              (char *)&(((structure_name *)0)\->field_name));   \\
   }
 .fi
+
 .PP
 Macro to convert a glthread_t structure to a user-defined structure\&. This macro provides a convenient way to convert a glthread_t structure to a user-defined structure\&. It creates a conversion function that takes a glthread_t pointer and returns a pointer to the user-defined structure\&. This is particularly useful when you have a glthread_t structure embedded within a user-defined structure and need to access the user-defined data\&.
 .PP
@@ -157,7 +157,8 @@ Macro to convert a glthread_t structure to a user-defined structure\&. This macr
 .PP
 Example usage: Suppose we have a user-defined structure named \fCblock_meta_data_t\fP that contains a \fCglthread_t\fP member named \fCpriority_thread_glue\fP\&. We want to create a conversion function named \fCglthread_to_block_meta_data\fP to convert a \fCglthread_t\fP pointer to a \fCblock_meta_data_t\fP pointer:
 .PP
-GLTHREAD_TO_STRUCT(glthread_to_block_meta_data, block_meta_data_t, priority_thread_glue, glthread_ptr);
+\fBGLTHREAD_TO_STRUCT(glthread_to_block_meta_data, block_meta_data_t,
+                   priority_thread_glue, glthread_ptr)\fP;
 .PP
 Now, we can use \fCglthread_to_block_meta_data\fP to convert \fCglthread_t\fP pointers to \fCblock_meta_data_t\fP pointers and access the metadata associated with memory blocks\&. 
 .SS "#define IS_GLTHREAD_LIST_EMPTY(glthreadptr)     ((glthreadptr)\->right == 0 && (glthreadptr)\->left == 0)"
@@ -177,15 +178,15 @@ int Returns 1 if the linked list is empty, 0 otherwise\&.
 .PP
 
 .SS "#define ITERATE_GLTHREAD_BEGIN(glthreadptrstart, glthreadptr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  {                                                                            \
-    glthread_t *_glthread_ptr = NULL;                                          \
-    glthreadptr = BASE(glthreadptrstart);                                      \
-    for (; glthreadptr != NULL; glthreadptr = _glthread_ptr) {                 \
-      _glthread_ptr = (glthreadptr)->right;
+  {                                                                            \\
+    glthread_t *_glthread_ptr = NULL;                                          \\
+    glthreadptr = BASE(glthreadptrstart);                                      \\
+    for (; glthreadptr != NULL; glthreadptr = _glthread_ptr) {                 \\
+      _glthread_ptr = (glthreadptr)\->right;
 .fi
+
 .PP
 Macro to begin iterating over a linked list of glthread_t structures\&. This macro sets up a loop to iterate over a linked list of glthread_t structures\&. It initializes necessary variables and pointers for the iteration\&.
 .PP
@@ -198,12 +199,12 @@ Macro to begin iterating over a linked list of glthread_t structures\&. This mac
 .PP
 
 .SS "#define ITERATE_GLTHREAD_END(glthreadptrstart, glthreadptr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  }                                                                            \
+  }                                                                            \\
   }
 .fi
+
 .PP
 Macro to end iteration over a linked list of glthread_t structures\&. This macro marks the end of the loop initiated by ITERATE_GLTHREAD_BEGIN\&. It closes the loop block\&.
 .PP
@@ -306,7 +307,7 @@ Insert a glthread_t structure into a sorted linked list based on priority\&.
 .RE
 .PP
 < Add in the end
-.SS "void* glthread_search (\fBglthread_t\fP * base_glthread, void *(*)(\fBglthread_t\fP *) thread_to_struct_fn, void * key, int(*)(void *, void *) comparison_fn)"
+.SS "void * glthread_search (\fBglthread_t\fP * base_glthread, void *(*)(\fBglthread_t\fP *) thread_to_struct_fn, void * key, int(*)(void *, void *) comparison_fn)"
 
 .PP
 Search for a specific glthread_t structure in the linked list\&. 
@@ -352,4 +353,4 @@ Removes the specified node from the threaded linked list\&. This function remove
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Linux Memeory Manager from the source code\&.
+Generated automatically by Doxygen for Linux Memory Manager from the source code\&.

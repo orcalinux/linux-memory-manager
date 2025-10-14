@@ -1,4 +1,4 @@
-.TH "include/memory_manager.h" 3 "Sun Oct 12 2025" "Linux Memeory Manager" \" -*- nroff -*-
+.TH "include/memory_manager.h" 3 "Linux Memory Manager" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -214,16 +214,16 @@ This file provides declarations for structures, macros, and functions used in th
 .SH "Macro Definition Documentation"
 .PP 
 .SS "#define ITERATE_PAGE_FAMILIES_BEGIN(vm_page_for_families_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  {                                                                            \
-    uint32_t _count = 0;                                                       \
-    for (curr =                                                                \
-             (vm_page_family_t *)&vm_page_for_families_ptr->vm_page_family[0]; \
-         curr->struct_size && _count < MAX_FAMILIES_PER_VM_PAGE;               \
+  {                                                                            \\
+    uint32_t _count = 0;                                                       \\
+    for (curr =                                                                \\
+             (vm_page_family_t *)&vm_page_for_families_ptr\->vm_page_family[0]; \\
+         curr\->struct_size && _count < MAX_FAMILIES_PER_VM_PAGE;               \\
          curr++, _count++) {
 .fi
+
 .PP
 Macro for beginning iteration over page families\&. This macro is used to begin iteration over page families stored within a virtual memory page\&. It initializes a loop for iterating over page families, using the provided pointers\&.
 .PP
@@ -251,12 +251,12 @@ This macro assumes that \fCvm_page_for_families_ptr\fP points to a valid virtual
 .PP
 
 .SS "#define ITERATE_PAGE_FAMILIES_END(vm_page_for_families_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  }                                                                            \
+  }                                                                            \\
   }
 .fi
+
 .PP
 Macro marking the end of iteration over families within a virtual memory page\&. This macro is used to mark the end of iteration over families within a virtual memory page, which was started with the \fCITERATE_PAGE_FAMILIES_BEGIN\fP macro\&. It concludes the loop for iterating over page families\&.
 .PP
@@ -284,15 +284,15 @@ The loop for iterating over families within a virtual memory page should be encl
 .PP
 
 .SS "#define ITERATE_VM_PAGE_ALL_BLOCKS_BEGIN(vm_page_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  do {                                                                         \
-    curr = &(vm_page_ptr->block_meta_data);                                    \
-    block_meta_data_t *next = NULL;                                            \
-    for (; curr != NULL; curr = next) {                                        \
+  do {                                                                         \\
+    curr = &(vm_page_ptr\->block_meta_data);                                    \\
+    block_meta_data_t *next = NULL;                                            \\
+    for (; curr != NULL; curr = next) {                                        \\
       next = NEXT_META_BLOCK(curr);
 .fi
+
 .PP
 Macro to begin iteration over all memory blocks within a virtual memory page\&. This macro initializes the iteration process over all memory blocks within a given virtual memory page\&.
 .PP
@@ -310,13 +310,13 @@ This macro is typically used in memory management systems to iterate over all me
 .PP
 
 .SS "#define ITERATE_VM_PAGE_ALL_BLOCKS_END(vm_page_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  }                                                                            \
-  }                                                                            \
+  }                                                                            \\
+  }                                                                            \\
   while (0)
 .fi
+
 .PP
 Macro to end iteration over all memory blocks within a virtual memory page\&. This macro marks the end of the iteration process over all memory blocks within a virtual memory page\&.
 .PP
@@ -334,15 +334,15 @@ This macro is used in conjunction with ITERATE_VM_PAGE_ALL_BLOCKS_BEGIN macro to
 .PP
 
 .SS "#define ITERATE_VM_PAGE_BEGIN(vm_page_family_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  {                                                                            \
-    curr = (vm_page_family_ptr)->first_page;                                   \
-    vm_page_t *next = NULL;                                                    \
-    for (; curr != NULL; curr = next) {                                        \
-      next = curr->next;
+  {                                                                            \\
+    curr = (vm_page_family_ptr)\->first_page;                                   \\
+    vm_page_t *next = NULL;                                                    \\
+    for (; curr != NULL; curr = next) {                                        \\
+      next = curr\->next;
 .fi
+
 .PP
 Macro to iterate over virtual memory pages beginning from the first page of a page family\&. This macro allows for iterating over virtual memory pages starting from the first page of a specified page family\&.
 .PP
@@ -355,12 +355,12 @@ Macro to iterate over virtual memory pages beginning from the first page of a pa
 .PP
 
 .SS "#define ITERATE_VM_PAGE_END(vm_page_family_ptr, curr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  }                                                                            \
+  }                                                                            \\
   }
 .fi
+
 .PP
 Macro marking the end of the iteration over virtual memory pages\&. This macro marks the end of the iteration over virtual memory pages\&.
 .PP
@@ -373,15 +373,15 @@ Macro marking the end of the iteration over virtual memory pages\&. This macro m
 .PP
 
 .SS "#define MARK_VM_PAGE_EMPTY(vm_page_t_ptr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  do {                                                                         \
-    (vm_page_t_ptr)->block_meta_data\&.next_block = NULL;                        \
-    (vm_page_t_ptr)->block_meta_data\&.prev_block = NULL;                        \
-    (vm_page_t_ptr)->block_meta_data\&.is_free = MM_TRUE;                        \
+  do {                                                                         \\
+    (vm_page_t_ptr)\->block_meta_data\&.next_block = NULL;                        \\
+    (vm_page_t_ptr)\->block_meta_data\&.prev_block = NULL;                        \\
+    (vm_page_t_ptr)\->block_meta_data\&.is_free = MM_TRUE;                        \\
   } while (0)
 .fi
+
 .PP
 Macro to mark a virtual memory page as empty\&. This macro is heavily documented to provide detailed information about its purpose, usage, and behavior\&.
 .PP
@@ -421,12 +421,12 @@ This macro is typically used in memory management systems as part of memory recy
 .PP
 
 .SS "#define MAX_FAMILIES_PER_VM_PAGE"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  (SYSTEM_PAGE_SIZE - sizeof(struct vm_page_for_families_ *)) /                \
+  (SYSTEM_PAGE_SIZE \- sizeof(struct vm_page_for_families_ *)) /                \\
       sizeof(struct vm_page_family_)
 .fi
+
 .PP
 Maximum number of families that can be stored in a single virtual memory page\&. This macro calculates the maximum number of families that can be stored in a single virtual memory page based on the system page size and the sizes of the \fCvm_page_for_families_t\fP and \fCvm_page_family_t\fP structures\&. It accounts for the space occupied by the \fCnext\fP pointer in \fCvm_page_for_families_t\fP\&.
 .PP
@@ -462,15 +462,15 @@ This macro is typically used to determine the maximum amount of memory that can 
 .SS "#define MAX_STRUCT_NAME_LEN   50"
 
 .SS "#define mm_bind_blocks_for_allocation(allocated_meta_block, free_meta_block)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  free_meta_block->prev_block = allocated_meta_block;                          \
-  free_meta_block->next_block = allocated_meta_block->next_block;              \
-  allocated_meta_block->next_block = free_meta_block;                          \
-  if (free_meta_block->next_block)                                             \
-  free_meta_block->next_block->prev_block = free_meta_block
+  free_meta_block\->prev_block = allocated_meta_block;                          \\
+  free_meta_block\->next_block = allocated_meta_block\->next_block;              \\
+  allocated_meta_block\->next_block = free_meta_block;                          \\
+  if (free_meta_block\->next_block)                                             \\
+  free_meta_block\->next_block\->prev_block = free_meta_block
 .fi
+
 .PP
 Binds metadata blocks for memory allocation\&. This macro is used to bind metadata blocks for memory allocation\&. It updates the pointers of the allocated and free blocks to maintain the integrity of the memory management system\&.
 .PP
@@ -527,12 +527,12 @@ This macro is typically used in memory management systems where metadata blocks 
 .PP
 
 .SS "#define NEXT_META_BLOCK_BY_SIZE(block_meta_data_ptr)"
-\fBValue:\fP
-.PP
+\fBValue:\fP.PP
 .nf
-  ((block_meta_data_t *)((char *)(block_meta_data_ptr + 1) +                   \
-                         (block_meta_data_ptr)->block_size))
+  ((block_meta_data_t *)((char *)(block_meta_data_ptr + 1) +                   \\
+                         (block_meta_data_ptr)\->block_size))
 .fi
+
 .PP
 Macro to retrieve the metadata of the next block based on the current block's size\&. This macro calculates the pointer to the metadata of the next block by adding the size of the current block to the pointer to the current block's metadata\&.
 .PP
@@ -636,7 +636,7 @@ Represents the false state\&.
 Represents the true state\&. 
 .SH "Function Documentation"
 .PP 
-.SS "\fBvm_page_t\fP* allocate_vm_page (\fBvm_page_family_t\fP * vm_page_family)"
+.SS "\fBvm_page_t\fP * allocate_vm_page (\fBvm_page_family_t\fP * vm_page_family)"
 
 .PP
 Allocates a new virtual memory page for a given page family\&. This function allocates a new virtual memory page for the specified page family\&. It initializes the metadata and pointers associated with the page and inserts the page into the linked list of pages belonging to the page family\&.
@@ -695,10 +695,11 @@ Macro to declare a conversion function for converting a glthread_t structure to 
 .PP
 Example usage: Suppose we have a user-defined structure named block_meta_data_t that contains a glthread_t member named priority_thread_glue\&. To declare a conversion function named glthread_to_block_meta_data to convert a glthread_t pointer to a block_meta_data_t pointer, we use the following declaration:
 .PP
-GLTHREAD_TO_STRUCT(glthread_to_block_meta_data, block_meta_data_t, priority_thread_glue, glthread_ptr);
+\fBGLTHREAD_TO_STRUCT(glthread_to_block_meta_data, block_meta_data_t,
+                   priority_thread_glue, glthread_ptr)\fP;
 .PP
 Now, we can use glthread_to_block_meta_data to convert glthread_t pointers to block_meta_data_t pointers and access the metadata associated with memory blocks\&. 
-.SS "\fBvm_page_family_t\fP* lookup_page_family_by_name (char * struct_name)"
+.SS "\fBvm_page_family_t\fP * lookup_page_family_by_name (char * struct_name)"
 
 .PP
 Looks up a page family by its name\&. This function iterates over all virtual memory pages hosting page families and returns a pointer to the page family object identified by the given struct_name\&. If no such page family object is found, it returns NULL\&.
@@ -748,7 +749,7 @@ This function assumes that the \fCis_free\fP flag of the \fCfree_block\fP struct
 .RE
 .PP
 
-.SS "static \fBblock_meta_data_t\fP* mm_allocate_free_data_block (\fBvm_page_family_t\fP * vm_page_family, uint32_t req_size)\fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_allocate_free_data_block (\fBvm_page_family_t\fP * vm_page_family, uint32_t req_size)\fC [static]\fP"
 
 .PP
 Allocates a free data block from the specified page family\&. This function attempts to allocate a free data block of the requested size from the specified page family\&. It first checks if there is a sufficiently large free block available within the page family\&. If not, it adds a new page to the page family to satisfy the allocation request\&. If successful, it splits the free block to allocate the requested memory and returns a pointer to the allocated block's metadata\&.
@@ -771,7 +772,7 @@ This function assumes that the specified page family has been properly initializ
 .RE
 .PP
 
-.SS "static \fBvm_page_t\fP* mm_family_new_page_add (\fBvm_page_family_t\fP * vm_page_family)\fC [static]\fP"
+.SS "static \fBvm_page_t\fP * mm_family_new_page_add (\fBvm_page_family_t\fP * vm_page_family)\fC [static]\fP"
 
 .PP
 Adds a new virtual memory page to the specified page family\&. This function adds a new virtual memory page to the specified page family\&. It first allocates a new page using the allocate_vm_page function and then adds the page to the page family\&. Additionally, it treats the new page as one free block and adds its metadata to the free block list of the page family\&.
@@ -792,7 +793,7 @@ This function assumes that the page family has been properly initialized and tha
 .RE
 .PP
 
-.SS "static \fBblock_meta_data_t\fP* mm_free_blocks (\fBblock_meta_data_t\fP * to_be_free_block)\fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_free_blocks (\fBblock_meta_data_t\fP * to_be_free_block)\fC [static]\fP"
 
 .PP
 Frees a memory block and performs merging if necessary\&. This function frees a memory block represented by the given \fCto_be_free_block\fP parameter\&. It also handles merging of adjacent free blocks if present\&.
@@ -813,7 +814,7 @@ The function assumes that \fCto_be_free_block\fP is not NULL and its is_free fla
 .RE
 .PP
 
-.SS "static \fBblock_meta_data_t\fP* mm_get_biggest_free_block_page_family (\fBvm_page_family_t\fP * vm_page_family)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_get_biggest_free_block_page_family (\fBvm_page_family_t\fP * vm_page_family)\fC [inline]\fP, \fC [static]\fP"
 
 .PP
 Retrieves the metadata of the biggest free memory block within a given virtual memory page family\&. This function retrieves the metadata of the biggest free memory block within a specified virtual memory page family\&. It utilizes a priority list to maintain the biggest free block at the head of the list\&.
@@ -852,7 +853,7 @@ The size of hard internal memory fragmentation between the two memory blocks\&.
 .RE
 .PP
 
-.SS "static void* mm_get_new_vm_page_from_kernel (int units)\fC [static]\fP"
+.SS "static void * mm_get_new_vm_page_from_kernel (int units)\fC [static]\fP"
 
 .PP
 Allocates a new virtual memory page from the kernel\&. This function allocates a new virtual memory page from the kernel and returns a pointer to the allocated memory block\&. It uses the \fCmmap()\fP system call to request the allocation of memory from the kernel\&.
@@ -1036,4 +1037,4 @@ Deletes and frees a virtual memory page\&. This function deletes and frees a vir
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Linux Memeory Manager from the source code\&.
+Generated automatically by Doxygen for Linux Memory Manager from the source code\&.

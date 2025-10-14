@@ -1,4 +1,4 @@
-.PHONY: clean_all clean_obj doc
+.PHONY: clean_all clean_obj clean_doc doc
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
@@ -65,7 +65,7 @@ bin/%_static.o: src/%.c $(HDR)
 
 # Clean target
 clean_all:
-	$(RM) -rf bin/* lib/* docs/doxygen_output/*
+	$(RM) -rf bin/* lib/* html latex man
 
 # Clean object files
 clean_obj:
@@ -74,4 +74,8 @@ clean_obj:
 # Generate documentation
 doc:
 	doxygen Doxyfile
+
+# Clean documentation
+clean_doc:
+	$(RM) -rf html latex man
 

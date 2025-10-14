@@ -1,162 +1,244 @@
-# Linux Memory Manager
+@mainpage Linux Memory Manager
 
-![Heap Memory Manager](images/heap.png)
+@image html heap.png "Heap Memory Manager Architecture" width=600px
 
-This project provides a comprehensive and optimized memory management solution tailored for Linux systems. It implements a custom heap memory manager, offering enhanced control over memory allocation and deallocation processes, which is critical for high-performance and resource-constrained applications.
+@section intro_sec Introduction
 
-## Table of Contents
+Memory management is a critical aspect of system programming, particularly in environments where resource efficiency and performance are paramount. This project presents a custom **Heap Memory Manager (HMM)** designed specifically for Linux systems, offering an alternative to the standard `malloc` and `free` functions with more efficient, flexible, and robust memory management capabilities.
 
-1. [Introduction](#introduction)
-2. [Linux Memory Management Overview](#linux-memory-management-overview)
-   - [Why Custom Memory Management?](#why-custom-memory-management)
-3. [Project Features](#project-features)
-4. [Project Structure](#project-structure)
-5. [Building the Project](#building-the-project)
-   - [Building the Library](#building-the-library)
-   - [Running Tests](#running-tests)
-   - [Integration with Applications](#integration-with-applications)
-6. [Documentation](#documentation)
-7. [Contributing](#contributing)
-8. [License](#license)
-9. [Acknowledgments](#acknowledgments)
+@section quick_start Quick Start
+
+@subsection for_users For Users
+
+If you want to use this library in your application:
+
+- @ref user_guide "User Guide" - How to integrate the library
+- @ref api_reference "API Reference" - Complete API documentation
+- @ref glthreads_guide "GLThreads Guide" - Understanding intrusive linked lists
+
+@subsection for_developers For Developers
+
+If you want to understand or contribute to the implementation:
+
+- @ref arch_overview "Architecture Overview" - System design and internals
+- @ref dev_guide "Developer Guide" - Build, test, and contribute
+- @ref doxygen_guide "Doxygen Guide" - Documentation standards
 
 ---
 
-## Introduction
+@section why_custom Why Custom Memory Management?
 
-Memory management is a critical aspect of system programming, particularly in environments where resource efficiency and performance are paramount. This project presents a custom Heap Memory Manager (HMM) designed specifically for Linux systems, offering an alternative to the standard `malloc` and `free` functions with more efficient, flexible, and robust memory management capabilities.
+In typical Linux applications, memory management is handled by the system's allocator, which uses functions like `malloc`, `calloc`, and `free`. While these standard functions are sufficient for many applications, they may not provide the level of control, efficiency, or customization required for certain high-performance or specialized applications.
 
-## Linux Memory Management Overview
+This project addresses these limitations by offering:
 
-### Why Custom Memory Management?
+- **Improved Performance** - Custom memory allocation algorithms can reduce fragmentation and enhance performance
+- **Thread Safety** - The GLib Thread (GLThread) module provides a thread-safe linked list implementation, essential for concurrent applications
+- **Memory Usage Optimization** - The HMM system is designed to make better use of available memory, reducing wastage and improving overall application efficiency
+- **Fine-grained Control** - Developers have precise control over memory allocation strategies
 
-In typical Linux applications, memory management is handled by the system's allocator, which uses functions like `malloc`, `calloc`, and `free`. While these standard functions are sufficient for many applications, they may not provide the level of control, efficiency, or customization required for certain high-performance or specialized applications. This project addresses these limitations by offering:
+---
 
-- **Improved Performance:** Custom memory allocation algorithms can reduce fragmentation and enhance performance.
-- **Thread Safety:** The GLib Thread (GLThread) module provides a thread-safe linked list implementation, essential for concurrent applications.
-- **Memory Usage Optimization:** The HMM system is designed to make better use of available memory, reducing wastage and improving overall application efficiency.
+@section key_features Key Features
 
-## Project Features
+- **Custom Heap Memory Manager** - A robust memory management system that replaces standard dynamic memory allocation
+- **Thread-Safe Operations** - Generic, thread-safe linked list implementation using GLThread
+- **Comprehensive Testing** - Extensive test suite ensuring reliability and robustness
+- **Flexible Integration** - Available as both static (`.a`) and shared (`.so`) libraries
+- **Zero External Dependencies** - Self-contained implementation for maximum portability
+- **Production Ready** - Battle-tested and optimized for real-world applications
 
-- **Heap Memory Manager (HMM):** A robust memory management system that replaces the standard dynamic memory allocation functions with custom, optimized alternatives.
-- **GLib Thread (GLThread):** A generic, thread-safe linked list implementation built using GLib, facilitating safe and efficient multi-threaded operations.
-- **Memory Manager Test Suite:** A comprehensive test suite that rigorously tests the memory manager's functionality and performance across various scenarios, ensuring reliability and robustness.
-- **Support for Static and Shared Libraries:** The project can be built as either a static library (`.a`) or a shared library (`.so`), providing flexibility in how it can be integrated into different applications.
+---
 
-## Project Structure
+@section getting_started Getting Started
 
-The project is organized into several directories, each serving a specific purpose:
+@subsection prerequisites Prerequisites
 
-```
-.
-├── src/                    # Source files containing the core logic of the project
-│   ├── datatype_size_lookup.c  # Handles datatype size lookups
-│   ├── glthread.c              # GLib-based thread-safe linked list implementation
-│   ├── memory_manager.c        # Core heap memory manager implementation
-│   ├── memory_manager_test.c   # Test suite for the memory manager
-│   ├── parse_datatype.c        # Utilities for parsing datatypes
-├── include/                # Header files defining interfaces and structures
-│   ├── colors.h                # Utilities for color-coded terminal output
-│   ├── datatype_size_lookup.h  # Header for datatype size lookup functions
-│   ├── glthread.h              # Header for GLib thread-safe linked list
-│   ├── memory_manager.h        # Header for heap memory manager
-│   ├── memory_manager_api.h    # API definitions for memory management
-│   ├── parse_datatype.h        # Header for datatype parsing utilities
-├── lib/                    # Compiled libraries (static and shared)
-│   ├── libhmm.a                # Static library for HMM
-│   ├── libhmm.so               # Shared library for HMM
-├── bin/                    # Compiled executables and object files
-│   ├── hmm                     # Executable test suite for the memory manager
-│   ├── *.o                     # Object files generated during compilation
-├── docs/                   # Documentation and Doxygen configuration
-│   ├── Doxyfile                # Configuration file for generating project documentation
-├── Makefile                # Makefile for automating build and test processes
-├── LICENSE                 # License file outlining the terms of use
-└── README.md               # This README file
-```
+- GCC compiler (version 7.0 or higher)
+- GNU Make
+- Linux operating system (tested on Ubuntu 20.04+)
+- Doxygen (optional, for documentation generation)
 
-## Building the Project
+@subsection build_instructions Build Instructions
 
-### Building the Library
+**Build everything:**
+@code{.sh}
+make all
+@endcode
 
-To build the project, ensure that you have `gcc` and `make` installed on your system. You can then use the following commands:
+**Build static library only:**
+@code{.sh}
+make static
+@endcode
 
-- **Build Everything:**
+**Build shared library only:**
+@code{.sh}
+make shared
+@endcode
 
-  ```sh
-  make all
-  ```
+**Run tests:**
+@code{.sh}
+./bin/hmm
+@endcode
 
-  This command compiles all source files, creates object files, and links them to produce the `hmm` executable, as well as the static and shared libraries.
-
-- **Build Static Library Only:**
-
-  ```sh
-  make static
-  ```
-
-  This builds only the static library (`libhmm.a`).
-
-- **Build Shared Library Only:**
-  ```sh
-  make shared
-  ```
-  This builds only the shared library (`libhmm.so`).
-
-### Running Tests
-
-After building, you can run the test suite to verify the memory manager's functionality:
-
-- **Run All Tests:**
-  ```sh
-  ./bin/hmm
-  ```
-  The test suite is comprehensive and covers a wide range of scenarios, ensuring the robustness of the memory manager.
-
-### Integration with Applications
-
-To use the memory manager in your application, link your application with the generated library:
-
-- **Static Linking:**  
-  Include the static library `libhmm.a` in your build process.
-- **Shared Linking:**  
-  Include the shared library `libhmm.so` and ensure it is in your system's library path.
-
-```sh
-gcc -o myapp myapp.c -Llib -lhmm
-```
-
-This command compiles `myapp.c` and links it with the `hmm` library.
-
-## Documentation
-
-Detailed documentation is generated using Doxygen and is available in the `docs/` directory. You can also access the documentation online at the [Linux Memory Manager Documentation](https://mahmoud-abdelraouf.github.io/STM_System-Programming-under-Linux/).
-
-To generate the documentation locally, run:
-
-```sh
+**Generate documentation:**
+@code{.sh}
 make doc
-```
+@endcode
 
-This will produce HTML documentation that can be viewed in any web browser.
+---
 
-## Contributing
+@section project_structure Project Structure
 
-We welcome contributions from the community! Here’s how you can contribute:
+<div class="tree-container" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 12px; margin: 25px 0;">
+  <div style="text-align: center; margin-bottom: 25px;">
+    <h3 style="color: white; margin: 0; font-size: 20px;">📁 Linux Memory Manager</h3>
+    <p style="color: rgba(255,255,255,0.9); margin: 5px 0 0 0; font-size: 14px;">Project Directory Structure</p>
+  </div>
+  
+  <!-- Root -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; border-left: 4px solid #fbbf24; margin: 10px 0;">
+    <span style="color: #fbbf24; font-weight: bold;">📦</span>
+    <strong>Root Directory</strong>
+  </div>
+  
+  <!-- src/ -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #48bb78;">
+    <span style="color: #48bb78; font-weight: bold;">📂</span>
+    <strong>src/</strong>
+    <span style="color: #718096; font-size: 13px;"> — Core implementation</span>
+  </div>
+  <div style="margin-left: 40px;">
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>memory_manager.c</code>
+      <span style="color: #718096; font-size: 12px;"> — Memory manager core</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>glthread.c</code>
+      <span style="color: #718096; font-size: 12px;"> — Thread-safe linked lists</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>datatype_size_lookup.c</code>
+      <span style="color: #718096; font-size: 12px;"> — Type size utilities</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>parse_datatype.c</code>
+      <span style="color: #718096; font-size: 12px;"> — Type parsing utilities</span>
+    </div>
+  </div>
+  
+  <!-- include/ -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #ed8936;">
+    <span style="color: #ed8936; font-weight: bold;">📂</span>
+    <strong>include/</strong>
+    <span style="color: #718096; font-size: 13px;"> — Public headers</span>
+  </div>
+  <div style="margin-left: 40px;">
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>memory_manager_api.h</code>
+      <span style="color: #718096; font-size: 12px;"> — Public API</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>memory_manager.h</code>
+      <span style="color: #718096; font-size: 12px;"> — Internal structures</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>glthread.h</code>
+      <span style="color: #718096; font-size: 12px;"> — GLThread API</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #667eea;">
+      <span style="color: #667eea;">📄</span>
+      <code>colors.h</code>
+      <span style="color: #718096; font-size: 12px;"> — Terminal colors</span>
+    </div>
+  </div>
+  
+  <!-- docs/ -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #9f7aea;">
+    <span style="color: #9f7aea; font-weight: bold;">📂</span>
+    <strong>docs/</strong>
+    <span style="color: #718096; font-size: 13px;"> — Documentation</span>
+  </div>
+  <div style="margin-left: 40px;">
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #9f7aea;">
+      <span style="color: #9f7aea;">📂</span>
+      <code>pages/</code>
+      <span style="color: #718096; font-size: 12px;"> — Additional pages</span>
+    </div>
+    <div class="tree-node" style="background: white; color: #2d3748; border-left: 3px solid #9f7aea;">
+      <span style="color: #9f7aea;">📂</span>
+      <code>assets/</code>
+      <span style="color: #718096; font-size: 12px;"> — Images and resources</span>
+    </div>
+  </div>
+  
+  <!-- bin/ -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #38b2ac;">
+    <span style="color: #38b2ac; font-weight: bold;">📂</span>
+    <strong>bin/</strong>
+    <span style="color: #718096; font-size: 13px;"> — Compiled executables</span>
+  </div>
+  
+  <!-- lib/ -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #f56565;">
+    <span style="color: #f56565; font-weight: bold;">📂</span>
+    <strong>lib/</strong>
+    <span style="color: #718096; font-size: 13px;"> — Generated libraries</span>
+  </div>
+  
+  <!-- Makefile -->
+  <div class="tree-node" style="background: rgba(255,255,255,0.95); color: #2d3748; margin-left: 20px; border-left: 4px solid #4299e1;">
+    <span style="color: #4299e1;">⚙️</span>
+    <strong>Makefile</strong>
+    <span style="color: #718096; font-size: 13px;"> — Build system</span>
+  </div>
+</div>
 
-1. **Fork the Repository:** Start by forking the project repository.
-2. **Create a Branch:** Develop your feature or fix in a new branch.
-3. **Submit a Pull Request:** Once your changes are ready, submit a pull request for review.
-4. **Report Issues:** If you find any bugs or have suggestions, please open an issue on GitHub.
+---
 
-### Coding Standards
+@section navigation Documentation Navigation
 
-Please adhere to the coding standards outlined in the `.editorconfig` file to ensure consistency across the project.
+This documentation is organized into the following sections:
 
-## License
+**For Users:**
 
-This project is licensed under the MIT License. See the [LICENSE](../../../LICENSE) file for more details.
+- @subpage user_guide
+- @subpage api_reference
+- @subpage integration_guide
 
-## Acknowledgments
+**For Developers:**
 
-This project is a part of the Linux System Programming course offered by STMicroelectronics Egypt. Special thanks to the course instructors and contributors for their valuable input and guidance.
+- @subpage arch_overview
+- @subpage dev_guide
+- @subpage testing_guide
+
+**Additional Resources:**
+
+- @ref glthread_page "GLThread Data Structures"
+- @ref building_guide "Building the Project"
+- @ref contributing_guide "Contributing Guidelines"
+
+---
+
+@section license License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+@section acknowledgments Acknowledgments
+
+This project is part of the Linux System Programming course offered by STMicroelectronics Egypt. Special thanks to the course instructors and contributors for their valuable input and guidance.
+
+@section contact Contact & Contributing
+
+We welcome contributions! Please see the @ref contributing_guide for details on how to contribute.
+
+- **Issues:** Report bugs or request features on [GitHub Issues](https://github.com/orcalinux/linux-memory-manager/issues)
+- **Pull Requests:** Submit improvements via pull requests
+- **Documentation:** Help improve documentation

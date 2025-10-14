@@ -1,4 +1,4 @@
-.TH "src/memory_manager.c" 3 "Sun Oct 12 2025" "Linux Memeory Manager" \" -*- nroff -*-
+.TH "src/memory_manager.c" 3 "Linux Memory Manager" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -139,7 +139,7 @@ Implementation file for the Memory Manager module\&.
 This file contains the implementation of functions declared in MemoryManager\&.h\&. The Memory Manager module is responsible for managing memory allocation and deallocation, including virtual memory page management, block metadata handling, and allocation algorithms\&. 
 .SH "Function Documentation"
 .PP 
-.SS "\fBvm_page_t\fP* allocate_vm_page (\fBvm_page_family_t\fP * vm_page_family)"
+.SS "\fBvm_page_t\fP * allocate_vm_page (\fBvm_page_family_t\fP * vm_page_family)"
 
 .PP
 Allocates a new virtual memory page for a given page family\&. This function allocates a new virtual memory page for the specified page family\&. It initializes the metadata and pointers associated with the page and inserts the page into the linked list of pages belonging to the page family\&.
@@ -157,7 +157,7 @@ Pointer to the newly allocated virtual memory page\&.
 
 .SS "static int free_blocks_comparison_function (void * _block_meta_data1, void * _block_meta_data2)\fC [static]\fP"
 
-.SS "\fBvm_page_family_t\fP* lookup_page_family_by_name (char * struct_name)"
+.SS "\fBvm_page_family_t\fP * lookup_page_family_by_name (char * struct_name)"
 
 .PP
 Looks up a page family by its name\&. This function iterates over all virtual memory pages hosting page families and returns a pointer to the page family object identified by the given struct_name\&. If no such page family object is found, it returns NULL\&.
@@ -191,11 +191,11 @@ This function should be used to retrieve a page family object by its name after 
 
 .SS "static void mm_add_free_block_meta_data_to_free_block_list (\fBvm_page_family_t\fP * vm_page_family, \fBblock_meta_data_t\fP * free_block)\fC [static]\fP"
 
-.SS "static \fBblock_meta_data_t\fP* mm_allocate_free_data_block (\fBvm_page_family_t\fP * vm_page_family, uint32_t req_size)\fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_allocate_free_data_block (\fBvm_page_family_t\fP * vm_page_family, uint32_t req_size)\fC [static]\fP"
 
-.SS "static \fBvm_page_t\fP* mm_family_new_page_add (\fBvm_page_family_t\fP * vm_page_family)\fC [static]\fP"
+.SS "static \fBvm_page_t\fP * mm_family_new_page_add (\fBvm_page_family_t\fP * vm_page_family)\fC [static]\fP"
 
-.SS "static \fBblock_meta_data_t\fP* mm_free_blocks (\fBblock_meta_data_t\fP * to_be_free_block)\fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_free_blocks (\fBblock_meta_data_t\fP * to_be_free_block)\fC [static]\fP"
 1 Pointer to the freed block
 .PP
 2 Marking the block as free
@@ -205,11 +205,11 @@ This function should be used to retrieve a page family object by its name after 
 4 Union two free blocks
 .PP
 5 Delete and free the hosting page
-.SS "static \fBblock_meta_data_t\fP* mm_get_biggest_free_block_page_family (\fBvm_page_family_t\fP * vm_page_family)\fC [inline]\fP, \fC [static]\fP"
+.SS "static \fBblock_meta_data_t\fP * mm_get_biggest_free_block_page_family (\fBvm_page_family_t\fP * vm_page_family)\fC [inline]\fP, \fC [static]\fP"
 
 .SS "static int mm_get_hard_internal_memory_frag_size (\fBblock_meta_data_t\fP * first, \fBblock_meta_data_t\fP * second)\fC [static]\fP"
 
-.SS "static void* mm_get_new_vm_page_from_kernel (int units)\fC [static]\fP"
+.SS "static void * mm_get_new_vm_page_from_kernel (int units)\fC [static]\fP"
 
 .SS "void mm_init ()"
 
@@ -362,7 +362,7 @@ Deletes and frees a virtual memory page\&. This function deletes and frees a vir
 .RE
 .PP
 
-.SS "void* xcalloc (char * struct_name, int units)"
+.SS "void * xcalloc (char * struct_name, int units)"
 
 .PP
 Allocates and initializes memory for an array of structures\&. This function allocates memory for an array of structures of the specified type and initializes the memory to zero\&. It first looks up the page family associated with the specified structure name to determine the size of the structure\&. Then, it checks if the requested memory size exceeds the maximum allocatable memory per page\&. If the allocation is successful, it initializes the allocated memory to zero and returns a pointer to the allocated memory\&.
@@ -422,4 +422,4 @@ This variable should be initialized to the size of the system page before any me
 
 .SH "Author"
 .PP 
-Generated automatically by Doxygen for Linux Memeory Manager from the source code\&.
+Generated automatically by Doxygen for Linux Memory Manager from the source code\&.
