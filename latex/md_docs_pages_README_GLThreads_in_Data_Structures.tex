@@ -1,0 +1,380 @@
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md37}{}\doxysubsection{Table of Contents}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md37}
+
+\begin{DoxyEnumerate}
+\item \href{\#introduction}{\texttt{ Introduction}}
+\item \href{\#why-its-called-glthreads}{\texttt{ Why It\textquotesingle{}s Called GLThreads}}
+\item \href{\#key-concepts}{\texttt{ Key Concepts}}
+\item \href{\#advantages}{\texttt{ Advantages}}
+\item \href{\#use-cases}{\texttt{ Use Cases}}
+\item \href{\#implementation-of-fundamental-data-structures-using-glthreads}{\texttt{ Implementation of Fundamental Data Structures Using GLThreads}}
+\begin{DoxyItemize}
+\item \href{\#1-linked-list-with-glthreads}{\texttt{ 1. Linked List with GLThreads}}
+\item \href{\#2-queue-with-glthreads}{\texttt{ 2. Queue with GLThreads}}
+\item \href{\#3-binary-tree-with-glthreads}{\texttt{ 3. Binary Tree with GLThreads}}
+\end{DoxyItemize}
+\item \href{\#advanced-glthreads-examples}{\texttt{ Advanced GLThreads Examples}}
+\begin{DoxyItemize}
+\item \href{\#1-double-ended-queue-deque-with-glthreads}{\texttt{ 1. Double-\/\+Ended Queue (Deque) with GLThreads}}
+\item \href{\#2-circular-linked-list-with-glthreads}{\texttt{ 2. Circular Linked List with GLThreads}}
+\end{DoxyItemize}
+\item \href{\#comparison-traditional-vs-glthreads-implementation}{\texttt{ Comparison\+: Traditional vs. GLThreads Implementation}}
+\item \href{\#conclusion}{\texttt{ Conclusion}}
+\item \href{\#references}{\texttt{ References}}
+\end{DoxyEnumerate}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md39}{}\doxysubsection{Introduction}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md39}
+{\bfseries{GLThreads}} (Generic Linked Threads) is a powerful programming technique used to manage data structures with enhanced flexibility and memory efficiency. GLThreads allow data structures to embed nodes directly within them, making it possible for a single data structure to participate in multiple linked structures simultaneously. This technique is particularly useful in low-\/level systems programming, where performance and memory efficiency are critical.\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md41}{}\doxysubsection{Why It\textquotesingle{}s Called GLThreads}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md41}
+The term {\bfseries{GLThreads}} or {\bfseries{Generic Linked Threads}} originates from the concept of \char`\"{}threads\char`\"{} in the context of linked lists and data structures. In traditional computing, a thread refers to a sequence of execution, often in the context of threading and concurrency. However, in the context of GLThreads\+:
+
+
+\begin{DoxyItemize}
+\item $\ast$$\ast$\char`\"{}\+Thread\char`\"{}$\ast$$\ast$ is used metaphorically to represent the \char`\"{}thread of connections\char`\"{} that link elements together in a data structure. Just as a thread in sewing connects fabric pieces together, in GLThreads, the embedded nodes connect elements within data structures, creating a \char`\"{}thread\char`\"{} of linked elements.
+\item The $\ast$$\ast$\char`\"{}\+Linked\char`\"{}$\ast$$\ast$ part of GLThreads emphasizes that these threads are specifically about linking data elements within a structure, allowing the data structure to participate in multiple linked lists or other structures simultaneously.
+\item {\bfseries{Generic}} indicates that this technique is not limited to any specific type of data structure (such as linked lists) but can be applied to various structures, including queues, trees, and more.
+\end{DoxyItemize}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md43}{}\doxysubsection{Key Concepts}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md43}
+
+\begin{DoxyItemize}
+\item {\bfseries{Embedded Nodes}}\+: Instead of using standalone nodes with pointers to the next and previous elements, GLThreads embed these nodes directly within the data structure. This allows the structure to be part of multiple lists without modification.
+\item {\bfseries{Offset-\/\+Based Navigation}}\+: Pointers to next and previous nodes are calculated using offsets within the containing structure. This allows for flexible management of data structures.
+\item {\bfseries{Multiple List Participation}}\+: A single data structure can participate in multiple lists, queues, or other linked structures simultaneously, enabling more complex relationships between data elements.
+\end{DoxyItemize}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md44}{}\doxysubsection{Advantages}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md44}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Memory Efficiency}}\+: By embedding nodes within the data structure, GLThreads reduce memory overhead by avoiding separate allocations for each node.
+\item {\bfseries{Flexibility}}\+: The same data structure can be linked into multiple lists or queues without needing to modify its definition.
+\item {\bfseries{Improved Cache Performance}}\+: Since nodes are embedded within a structure that is often accessed together, cache locality is improved.
+\end{DoxyEnumerate}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md45}{}\doxysubsection{Use Cases}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md45}
+
+\begin{DoxyItemize}
+\item {\bfseries{Operating Systems}}\+: Managing processes or tasks in different queues (e.\+g., run queue, wait queue) simultaneously.
+\item {\bfseries{Embedded Systems}}\+: Efficiently managing resources with minimal overhead.
+\item {\bfseries{Complex Data Management}}\+: Any system where the same data structure needs to participate in multiple lists or other linked structures.
+\end{DoxyItemize}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md46}{}\doxysubsection{Implementation of Fundamental Data Structures Using GLThreads}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md46}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md47}{}\doxysubsubsection{1. $<$strong$>$\+Linked List with GLThreads$<$/strong$>$}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md47}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <stddef.h>}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include <stdio.h>}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }glthread\_node \{}
+\DoxyCodeLine{    \textcolor{keyword}{struct }glthread\_node *prev;}
+\DoxyCodeLine{    \textcolor{keyword}{struct }glthread\_node *next;}
+\DoxyCodeLine{\} glthread\_node\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{}
+\DoxyCodeLine{    \textcolor{keywordtype}{char} name[32];}
+\DoxyCodeLine{    \textcolor{keywordtype}{int} id;}
+\DoxyCodeLine{    glthread\_node\_t glnode;}
+\DoxyCodeLine{\} employee\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define OFFSET\_OF(type, member) ((size\_t)\&(((type *)0)-\/>member))}}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define GLTHREAD\_TO\_STRUCT(ptr, type, member) \(\backslash\)}}
+\DoxyCodeLine{\textcolor{preprocessor}{    (type *)((char *)(ptr) -\/ OFFSET\_OF(type, member))}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(glthread\_node\_t *base\_node, glthread\_node\_t *new\_node) \{}
+\DoxyCodeLine{    new\_node-\/>prev = base\_node;}
+\DoxyCodeLine{    new\_node-\/>next = base\_node-\/>next;}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (base\_node-\/>next) \{}
+\DoxyCodeLine{        base\_node-\/>next-\/>prev = new\_node;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    base\_node-\/>next = new\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(glthread\_node\_t *glnode) \{}
+\DoxyCodeLine{    glnode-\/>prev = NULL;}
+\DoxyCodeLine{    glnode-\/>next = NULL;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{memory__manager__test_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}}() \{}
+\DoxyCodeLine{    employee\_t e1 = \{.name = \textcolor{stringliteral}{"{}Alice"{}}, .id = 1\};}
+\DoxyCodeLine{    employee\_t e2 = \{.name = \textcolor{stringliteral}{"{}Bob"{}}, .id = 2\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e1.glnode);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(\&e1.glnode, \&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_node\_t *head = \&e1.glnode;}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} (head) \{}
+\DoxyCodeLine{        employee\_t *emp = \mbox{\hyperlink{memory__manager_8h_aa604b0781f01e3696274d24e45a62ff2}{GLTHREAD\_TO\_STRUCT}}(head, employee\_t, glnode);}
+\DoxyCodeLine{        printf(\textcolor{stringliteral}{"{}Employee: \%s, ID: \%d\(\backslash\)n"{}}, emp-\/>name, emp-\/>id);}
+\DoxyCodeLine{        head = head-\/>next;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md48}{}\doxysubsubsection{2. $<$strong$>$\+Queue with GLThreads$<$/strong$>$}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md48}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }glthread\_queue \{}
+\DoxyCodeLine{    glthread\_node\_t *front;}
+\DoxyCodeLine{    glthread\_node\_t *rear;}
+\DoxyCodeLine{\} glthread\_queue\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} enqueue(glthread\_queue\_t *queue, glthread\_node\_t *new\_node) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (queue-\/>rear == NULL) \{}
+\DoxyCodeLine{        queue-\/>front = new\_node;}
+\DoxyCodeLine{        queue-\/>rear = new\_node;}
+\DoxyCodeLine{    \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{        \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(queue-\/>rear, new\_node);}
+\DoxyCodeLine{        queue-\/>rear = new\_node;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{glthread\_node\_t *dequeue(glthread\_queue\_t *queue) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (queue-\/>front == NULL) \{}
+\DoxyCodeLine{        \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    glthread\_node\_t *front\_node = queue-\/>front;}
+\DoxyCodeLine{    queue-\/>front = front\_node-\/>next;}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (queue-\/>front == NULL) \{}
+\DoxyCodeLine{        queue-\/>rear = NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} front\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{memory__manager__test_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}}() \{}
+\DoxyCodeLine{    employee\_t e1 = \{.name = \textcolor{stringliteral}{"{}Alice"{}}, .id = 1\};}
+\DoxyCodeLine{    employee\_t e2 = \{.name = \textcolor{stringliteral}{"{}Bob"{}}, .id = 2\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e1.glnode);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_queue\_t queue = \{0\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    enqueue(\&queue, \&e1.glnode);}
+\DoxyCodeLine{    enqueue(\&queue, \&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_node\_t *node;}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} ((node = dequeue(\&queue)) != NULL) \{}
+\DoxyCodeLine{        employee\_t *emp = \mbox{\hyperlink{memory__manager_8h_aa604b0781f01e3696274d24e45a62ff2}{GLTHREAD\_TO\_STRUCT}}(node, employee\_t, glnode);}
+\DoxyCodeLine{        printf(\textcolor{stringliteral}{"{}Dequeued Employee: \%s, ID: \%d\(\backslash\)n"{}}, emp-\/>name, emp-\/>id);}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md49}{}\doxysubsubsection{3. $<$strong$>$\+Binary Tree with GLThreads$<$/strong$>$}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md49}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }glthread\_tree\_node \{}
+\DoxyCodeLine{    glthread\_node\_t left\_node;}
+\DoxyCodeLine{    glthread\_node\_t right\_node;}
+\DoxyCodeLine{\} glthread\_tree\_node\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{}
+\DoxyCodeLine{    \textcolor{keywordtype}{char} name[32];}
+\DoxyCodeLine{    \textcolor{keywordtype}{int} id;}
+\DoxyCodeLine{    glthread\_tree\_node\_t gltree\_node;}
+\DoxyCodeLine{\} tree\_employee\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} add\_left\_child(tree\_employee\_t *parent, tree\_employee\_t *child) \{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(\&parent-\/>gltree\_node.left\_node, \&child-\/>gltree\_node.left\_node);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} add\_right\_child(tree\_employee\_t *parent, tree\_employee\_t *child) \{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(\&parent-\/>gltree\_node.right\_node, \&child-\/>gltree\_node.right\_node);}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{memory__manager__test_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}}() \{}
+\DoxyCodeLine{    tree\_employee\_t root = \{.name = \textcolor{stringliteral}{"{}CEO"{}}, .id = 1\};}
+\DoxyCodeLine{    tree\_employee\_t left = \{.name = \textcolor{stringliteral}{"{}Manager"{}}, .id = 2\};}
+\DoxyCodeLine{    tree\_employee\_t right = \{.name = \textcolor{stringliteral}{"{}CTO"{}}, .id = 3\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&root.gltree\_node.left\_node);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&root.gltree\_node.right\_node);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&left.gltree\_node.left\_node);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&right.gltree\_node.right\_node);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    add\_left\_child(\&root, \&left);}
+\DoxyCodeLine{    add\_right\_child(\&root, \&right);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    printf(\textcolor{stringliteral}{"{}Root: \%s, Left: \%s, Right: \%s\(\backslash\)n"{}}, root.name, left.name, right.name);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md50}{}\doxysubsection{Advanced GLThreads Examples}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md50}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md51}{}\doxysubsubsection{1. $<$strong$>$\+Double-\/\+Ended Queue (\+Deque) with GLThreads$<$/strong$>$}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md51}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }glthread\_deque \{}
+\DoxyCodeLine{    glthread\_node\_t *front;}
+\DoxyCodeLine{    glthread\_node\_t *rear;}
+\DoxyCodeLine{\} glthread\_deque\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} deque\_add\_front(glthread\_deque\_t *deque, glthread\_node\_t *new\_node) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>front == NULL) \{}
+\DoxyCodeLine{        deque-\/>front = new\_node;}
+\DoxyCodeLine{        deque-\/>rear = new\_node;}
+\DoxyCodeLine{    \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{        \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(new\_node, deque-\/>front);}
+\DoxyCodeLine{        deque-\/>front = new\_node;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} deque\_add\_rear(glthread\_deque\_t *deque, glthread\_node\_t *new\_node) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>rear == NULL) \{}
+\DoxyCodeLine{        deque-\/>front = new\_node;}
+\DoxyCodeLine{        deque-\/>rear = new\_node;}
+\DoxyCodeLine{    \} \textcolor{keywordflow}{else} \{}
+\DoxyCodeLine{        \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(deque-\/>rear, new\_node);}
+\DoxyCodeLine{        deque-\/>rear = new\_node;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{glthread\_node\_t *deque\_remove\_front(glthread\_deque\_t *deque) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>front == NULL) \{}
+\DoxyCodeLine{        \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    glthread\_node\_t *front\_node = deque-\/>front;}
+\DoxyCodeLine{    deque-\/>front = front\_node-\/>next;}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>front == NULL) \{}
+\DoxyCodeLine{        deque-\/>rear = NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} front\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{glthread\_node\_t *deque\_remove\_rear(glthread\_deque\_t *deque) \{}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>rear == NULL) \{}
+\DoxyCodeLine{        \textcolor{keywordflow}{return} NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    glthread\_node\_t *rear\_node = deque-\/>rear;}
+\DoxyCodeLine{    deque-\/>rear = rear\_node-\/>prev;}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (deque-\/>rear == NULL) \{}
+\DoxyCodeLine{        deque-\/>front = NULL;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} rear\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{memory__manager__test_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}}() \{}
+\DoxyCodeLine{    employee\_t e1 = \{.name = \textcolor{stringliteral}{"{}Alice"{}}, .id = 1\};}
+\DoxyCodeLine{    employee\_t e2 = \{.name = \textcolor{stringliteral}{"{}Bob"{}}, .id = 2\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e1.glnode);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_deque\_t deque = \{0\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    deque\_add\_front(\&deque, \&e1.glnode);}
+\DoxyCodeLine{    deque\_add\_rear(\&deque, \&e2.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_node\_t *node;}
+\DoxyCodeLine{}
+\DoxyCodeLine{    node = deque\_remove\_front(\&deque);}
+\DoxyCodeLine{    employee\_t *emp = \mbox{\hyperlink{memory__manager_8h_aa604b0781f01e3696274d24e45a62ff2}{GLTHREAD\_TO\_STRUCT}}(node, employee\_t, glnode);}
+\DoxyCodeLine{    printf(\textcolor{stringliteral}{"{}Dequeued from front: \%s, ID: \%d\(\backslash\)n"{}}, emp-\/>name, emp-\/>id);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    node = deque\_remove\_rear(\&deque);}
+\DoxyCodeLine{    emp = \mbox{\hyperlink{memory__manager_8h_aa604b0781f01e3696274d24e45a62ff2}{GLTHREAD\_TO\_STRUCT}}(node, employee\_t, glnode);}
+\DoxyCodeLine{    printf(\textcolor{stringliteral}{"{}Dequeued from rear: \%s, ID: \%d\(\backslash\)n"{}}, emp-\/>name, emp-\/>id);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md52}{}\doxysubsubsection{2. $<$strong$>$\+Circular Linked List with GLThreads$<$/strong$>$}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md52}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void} glthread\_add\_circular(glthread\_node\_t *base\_node, glthread\_node\_t *new\_node) \{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(base\_node, new\_node);}
+\DoxyCodeLine{    new\_node-\/>next = base\_node;}
+\DoxyCodeLine{    base\_node-\/>prev = new\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} \mbox{\hyperlink{memory__manager__test_8c_a840291bc02cba5474a4cb46a9b9566fe}{main}}() \{}
+\DoxyCodeLine{    employee\_t e1 = \{.name = \textcolor{stringliteral}{"{}Alice"{}}, .id = 1\};}
+\DoxyCodeLine{    employee\_t e2 = \{.name = \textcolor{stringliteral}{"{}Bob"{}}, .id = 2\};}
+\DoxyCodeLine{    employee\_t e3 = \{.name = \textcolor{stringliteral}{"{}Charlie"{}}, .id = 3\};}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e1.glnode);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e2.glnode);}
+\DoxyCodeLine{    \mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&e3.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_add\_circular(\&e1.glnode, \&e2.glnode);}
+\DoxyCodeLine{    glthread\_add\_circular(\&e2.glnode, \&e3.glnode);}
+\DoxyCodeLine{}
+\DoxyCodeLine{    glthread\_node\_t *current = \&e1.glnode;}
+\DoxyCodeLine{    \textcolor{keywordflow}{for} (\textcolor{keywordtype}{int} i = 0; i < 6; i++) \{ \textcolor{comment}{// Iterate more than the list size to show circularity}}
+\DoxyCodeLine{        employee\_t *emp = \mbox{\hyperlink{memory__manager_8h_aa604b0781f01e3696274d24e45a62ff2}{GLTHREAD\_TO\_STRUCT}}(current, employee\_t, glnode);}
+\DoxyCodeLine{        printf(\textcolor{stringliteral}{"{}Employee: \%s, ID: \%d\(\backslash\)n"{}}, emp-\/>name, emp-\/>id);}
+\DoxyCodeLine{        current = current-\/>next;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} 0;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md53}{}\doxysubsection{Comparison\+: Traditional vs. GLThreads Implementation}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md53}
+\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md54}{}\doxysubsubsection{Traditional Linked List Implementation}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md54}
+In a traditional linked list, each node is typically a standalone structure containing pointers to the next (and possibly previous) nodes, along with the data. For example\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }node \{}
+\DoxyCodeLine{    \textcolor{keyword}{struct }node *next;}
+\DoxyCodeLine{    \textcolor{keywordtype}{int} data;}
+\DoxyCodeLine{\} node\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{node\_t *create\_node(\textcolor{keywordtype}{int} data) \{}
+\DoxyCodeLine{    node\_t *new\_node = (node\_t *)malloc(\textcolor{keyword}{sizeof}(node\_t));}
+\DoxyCodeLine{    new\_node-\/>data = data;}
+\DoxyCodeLine{    new\_node-\/>next = NULL;}
+\DoxyCodeLine{    \textcolor{keywordflow}{return} new\_node;}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void} append(node\_t **head, \textcolor{keywordtype}{int} data) \{}
+\DoxyCodeLine{    node\_t *new\_node = create\_node(data);}
+\DoxyCodeLine{    \textcolor{keywordflow}{if} (*head == NULL) \{}
+\DoxyCodeLine{        *head = new\_node;}
+\DoxyCodeLine{        \textcolor{keywordflow}{return};}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    node\_t *current = *head;}
+\DoxyCodeLine{    \textcolor{keywordflow}{while} (current-\/>next != NULL) \{}
+\DoxyCodeLine{        current = current-\/>next;}
+\DoxyCodeLine{    \}}
+\DoxyCodeLine{    current-\/>next = new\_node;}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Explanation\+:}}
+
+
+\begin{DoxyItemize}
+\item In the traditional approach, each node is an independent entity that needs to be dynamically allocated.
+\item It is less flexible when it comes to using the same data structure in multiple lists, and managing memory efficiently requires careful handling.
+\end{DoxyItemize}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md55}{}\doxysubsubsection{GLThreads Implementation}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md55}
+In the GLThreads approach, the node is embedded within the data structure itself, and offset-\/based calculations are used to navigate the links\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef} \textcolor{keyword}{struct }\{}
+\DoxyCodeLine{    \textcolor{keywordtype}{char} name[32];}
+\DoxyCodeLine{    \textcolor{keywordtype}{int} id;}
+\DoxyCodeLine{    glthread\_node\_t glnode;}
+\DoxyCodeLine{\} employee\_t;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{// Functions like glthread\_add\_next and others as defined earlier}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Explanation\+:}}
+
+
+\begin{DoxyItemize}
+\item {\bfseries{Memory Efficiency\+:}} No need for separate memory allocations for nodes; they are embedded within the structure.
+\item {\bfseries{Flexibility\+:}} The same structure can be part of multiple lists or other data structures simultaneously.
+\item {\bfseries{Cache Performance\+:}} Better cache locality because related data is stored contiguously.
+\end{DoxyItemize}\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md56}{}\doxysubsection{Conclusion}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md56}
+GLThreads provide a flexible and memory-\/efficient way to manage complex data structures, particularly in systems where performance and memory use are critical. By embedding linkage nodes directly within the data structures and using offset-\/based navigation, GLThreads allow the same data structure to be part of multiple linked structures without additional overhead.\hypertarget{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md57}{}\doxysubsection{References}\label{md_docs_pages_README_GLThreads_in_Data_Structures_autotoc_md57}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Linux Kernel Documentation}}\+: Explore how similar concepts are implemented in the Linux kernel, particularly in managing processes and other kernel objects.
+\item {\bfseries{GLib Documentation}}\+: Learn about {\ttfamily GList} and other data structures in GLib, which can be adapted to follow GLThread-\/like patterns.
+\item {\bfseries{Advanced Data Structures Books}}\+: Books like \char`\"{}\+The Art of Computer Programming\char`\"{} by Donald Knuth provide deep insights into data structures and their implementation. 
+\end{DoxyEnumerate}
