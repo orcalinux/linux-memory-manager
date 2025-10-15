@@ -1,0 +1,319 @@
+\chapter{Architecture Overview}
+\hypertarget{md_docs_2pages_2architecture}{}\label{md_docs_2pages_2architecture}\index{Architecture Overview@{Architecture Overview}}
+Overview of the Linux Memory Manager architecture and design.
+
+\label{md_docs_2pages_2architecture_autotoc_md38}%
+\Hypertarget{md_docs_2pages_2architecture_autotoc_md38}%
+ \hypertarget{md_docs_2pages_2architecture_autotoc_md39}{}\doxysection{\texorpdfstring{Table of Contents}{Table of Contents}}\label{md_docs_2pages_2architecture_autotoc_md39}
+
+\begin{DoxyItemize}
+\item Architecture Overview
+\begin{DoxyItemize}
+\item Table of Contents
+\item System Architecture
+\item Architecture Layers
+\item Core Components
+\begin{DoxyItemize}
+\item Page Family System
+\item Virtual Memory Pages
+\item Page Layout
+\item Memory Model
+\item Block Metadata
+\end{DoxyItemize}
+\item GLThread Design
+\item Memory Allocation Flow
+\begin{DoxyItemize}
+\item Allocation Process
+\item Deallocation Process
+\end{DoxyItemize}
+\item Optimizations
+\begin{DoxyItemize}
+\item Priority Free Lists
+\item Block Merging
+\item Page Recycling
+\end{DoxyItemize}
+\item Thread Safety Considerations
+\item Performance Characteristics
+\item Memory Layout
+\item Future Enhancements
+\item Related Documentation
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md41}{}\doxysection{\texorpdfstring{System Architecture}{System Architecture}}\label{md_docs_2pages_2architecture_autotoc_md41}
+The Linux Memory Manager is designed with a layered architecture that provides efficient memory management while maintaining simplicity and clarity.
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md43}{}\doxysection{\texorpdfstring{Architecture Layers}{Architecture Layers}}\label{md_docs_2pages_2architecture_autotoc_md43}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md45}{}\doxysection{\texorpdfstring{Core Components}{Core Components}}\label{md_docs_2pages_2architecture_autotoc_md45}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md46}{}\doxysubsection{\texorpdfstring{Page Family System}{Page Family System}}\label{md_docs_2pages_2architecture_autotoc_md46}
+Each registered data type gets its own {\bfseries{page family}}\+:
+
+
+\begin{DoxyItemize}
+\item Manages a set of 4KB virtual memory pages.
+\item Each page is divided into fixed-\/size blocks for the registered structure.
+\item Tracks free and used blocks within its pages.
+\item Optimizes for minimal fragmentation by managing blocks of a single size.
+\end{DoxyItemize}
+
+{\bfseries{Structure\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }vm\_page\_family\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}\ struct\_name[\mbox{\hyperlink{memory__manager_8h_a7e33ad2337bb751f178af9eebc45a84d}{MM\_MAX\_STRUCT\_NAME}}];}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ struct\_size;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structglthread__}{glthread\_t}}\ free\_block\_priority\_list\_head;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structvm__page__for__families__}{vm\_page\_for\_families\_t}}\ *first\_page;}
+\DoxyCodeLine{\}\ \mbox{\hyperlink{memory__manager_8h_ad146e732e35bec81b72c7437204e9ee8}{vm\_page\_family\_t}};}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md47}{}\doxysubsection{\texorpdfstring{Virtual Memory Pages}{Virtual Memory Pages}}\label{md_docs_2pages_2architecture_autotoc_md47}
+Pages are the basic unit of memory allocated from the kernel via {\ttfamily mmap()}.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }vm\_page\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }vm\_page\ *next;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }vm\_page\ *prev;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }vm\_page\_family\ *pg\_family;}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ block\_size;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{char}\ page\_memory[0];\ \textcolor{comment}{//\ Flexible\ array\ member\ for\ the\ start\ of\ the\ page's\ memory}}
+\DoxyCodeLine{\}\ \mbox{\hyperlink{memory__manager_8h_a3781a6a3593d9877d1c25c4c8e3f1868}{vm\_page\_t}};}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md48}{}\doxysubsection{\texorpdfstring{Page Layout}{Page Layout}}\label{md_docs_2pages_2architecture_autotoc_md48}
+A single 4KB page is structured as follows\+:
+
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md50}{}\doxysubsection{\texorpdfstring{Memory Model}{Memory Model}}\label{md_docs_2pages_2architecture_autotoc_md50}
+The internal relationship between the kernel memory, virtual memory pages, and blocks is as follows\+:
+
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md52}{}\doxysubsection{\texorpdfstring{Block Metadata}{Block Metadata}}\label{md_docs_2pages_2architecture_autotoc_md52}
+Each block of memory within a page is preceded by a metadata structure that tracks its state.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }block\_meta\_data\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ is\_free;}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ block\_size;}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ offset;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structglthread__}{glthread\_t}}\ priority\_thread\_glue;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }vm\_page*\ vm\_page;}
+\DoxyCodeLine{\}\ \mbox{\hyperlink{memory__manager_8h_a173309530f1b69ddabf71b33b75baf9f}{block\_meta\_data\_t}};}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md54}{}\doxysection{\texorpdfstring{GLThread Design}{GLThread Design}}\label{md_docs_2pages_2architecture_autotoc_md54}
+GLThread is an {\bfseries{intrusive linked list}}. This means the list node is embedded directly within the data structure it belongs to, rather than being stored separately.
+
+{\bfseries{Advantages\+:}}
+
+
+\begin{DoxyItemize}
+\item {\bfseries{Zero allocation overhead\+:}} No extra memory allocations are needed for list nodes.
+\item {\bfseries{Cache-\/friendly\+:}} The list node and the data are in the same memory block, improving cache locality.
+\item {\bfseries{Type-\/safe conversion\+:}} Macros provide a safe way to get the containing structure from a list node pointer.
+\item {\bfseries{No pointer indirection\+:}} Accessing the data from the node is a simple offset calculation, not a pointer lookup.
+\end{DoxyItemize}
+
+{\bfseries{Example\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ data;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structglthread__}{glthread\_t}}\ list\_node;\ \textcolor{comment}{//\ Embedded\ node}}
+\DoxyCodeLine{\}\ MyStruct;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Add\ to\ list}}
+\DoxyCodeLine{MyStruct\ obj;}
+\DoxyCodeLine{\mbox{\hyperlink{glthread_8h_a9e4b763220b1c69da2d9e9f191506f89}{init\_glthread}}(\&obj.list\_node);}
+\DoxyCodeLine{\mbox{\hyperlink{glthread_8h_adafe7c4011854c5d89fbafe866c32cfc}{glthread\_add\_next}}(\&list\_head,\ \&obj.list\_node);}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Traverse\ list}}
+\DoxyCodeLine{GLTHREAD\_FOREACH(\&list\_head,\ node)\ \{}
+\DoxyCodeLine{\ \ \ \ MyStruct\ *s\ =\ \mbox{\hyperlink{glthread_8h_a46e14b66e90bb61bc6fce5e45a753d69}{GLTHREAD\_TO\_STRUCT}}(node,\ MyStruct,\ list\_node);}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Use\ s-\/>data}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md56}{}\doxysection{\texorpdfstring{Memory Allocation Flow}{Memory Allocation Flow}}\label{md_docs_2pages_2architecture_autotoc_md56}
+The process of allocating and deallocating memory is central to the manager\textquotesingle{}s design.\hypertarget{md_docs_2pages_2architecture_autotoc_md57}{}\doxysubsection{\texorpdfstring{Allocation Process}{Allocation Process}}\label{md_docs_2pages_2architecture_autotoc_md57}
+The following diagram illustrates the flow when {\ttfamily XCALLOC} is called\+:
+
+
+
+{\bfseries{Steps\+:}}
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Application calls {\ttfamily XCALLOC}\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{Employee\ *emp\ =\ \mbox{\hyperlink{memory__manager__api_8h_a3a295a457410e0dd9a09f7dc73e3b78e}{XCALLOC}}(1,\ Employee);}
+
+\end{DoxyCode}
+
+\item {\bfseries{Find Page Family\+:}} The manager looks up the page family registered for the {\ttfamily Employee} struct.
+\item {\bfseries{Check for Free Block\+:}} It checks the {\ttfamily free\+\_\+block\+\_\+priority\+\_\+list} for an available block.
+\item {\bfseries{Two Paths\+:}}
+\begin{DoxyItemize}
+\item {\bfseries{✓ If a free block exists\+:}}
+\begin{DoxyItemize}
+\item The block is removed from the free list.
+\item Its metadata is updated to mark it as {\ttfamily used}.
+\item A pointer to the data portion of the block is returned to the application.
+\end{DoxyItemize}
+\item {\bfseries{✗ If no free block exists\+:}}
+\begin{DoxyItemize}
+\item A new 4KB page is requested from the kernel using {\ttfamily mmap()}.
+\item The new page is initialized and divided into blocks of the appropriate size.
+\item The first block is returned to the user, and the rest are added to the free list.
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyEnumerate}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md59}{}\doxysubsection{\texorpdfstring{Deallocation Process}{Deallocation Process}}\label{md_docs_2pages_2architecture_autotoc_md59}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Application calls {\ttfamily XFREE}\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{memory__manager__api_8h_a36a9e17ea9f866a838cf58da2834274a}{XFREE}}(emp);}
+
+\end{DoxyCode}
+
+\item {\bfseries{Find Block Metadata\+:}} The manager calculates the address of the block\textquotesingle{}s metadata from the given pointer.
+\item {\bfseries{Mark as Free\+:}} The block\textquotesingle{}s {\ttfamily is\+\_\+free} flag is set to {\ttfamily true}.
+\item {\bfseries{Add to Free List\+:}} The block is added back to the page family\textquotesingle{}s priority free list.
+\item {\bfseries{Merge Blocks\+:}} The manager attempts to merge the newly freed block with adjacent free blocks to form a larger contiguous block.
+\item {\bfseries{Return Page to Kernel\+:}} If a page becomes completely empty (all its blocks are free and merged into one), it can be returned to the kernel using {\ttfamily munmap()} to reduce the process\textquotesingle{}s memory footprint.
+\end{DoxyEnumerate}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md61}{}\doxysection{\texorpdfstring{Optimizations}{Optimizations}}\label{md_docs_2pages_2architecture_autotoc_md61}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md62}{}\doxysubsection{\texorpdfstring{Priority Free Lists}{Priority Free Lists}}\label{md_docs_2pages_2architecture_autotoc_md62}
+
+\begin{DoxyItemize}
+\item Free blocks are kept in a priority-\/ordered list, with the largest blocks first.
+\item Reduces fragmentation and improves allocation speed.
+\end{DoxyItemize}\hypertarget{md_docs_2pages_2architecture_autotoc_md63}{}\doxysubsection{\texorpdfstring{Block Merging}{Block Merging}}\label{md_docs_2pages_2architecture_autotoc_md63}
+
+\begin{DoxyItemize}
+\item Adjacent free blocks are merged into one larger block when possible.
+\item Reduces fragmentation and increases allocation success rate for larger structures.
+\end{DoxyItemize}\hypertarget{md_docs_2pages_2architecture_autotoc_md64}{}\doxysubsection{\texorpdfstring{Page Recycling}{Page Recycling}}\label{md_docs_2pages_2architecture_autotoc_md64}
+
+\begin{DoxyItemize}
+\item Completely free pages are unmapped using {\ttfamily munmap()}.
+\item Keeps memory footprint dynamic and efficient.
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md66}{}\doxysection{\texorpdfstring{Thread Safety Considerations}{Thread Safety Considerations}}\label{md_docs_2pages_2architecture_autotoc_md66}
+{\bfseries{Current Implementation\+:}}
+
+
+\begin{DoxyItemize}
+\item GLThread operations are thread-\/safe.
+\item Memory allocation ({\ttfamily XCALLOC}, {\ttfamily XFREE}) is not thread-\/safe.
+\end{DoxyItemize}
+
+{\bfseries{Recommendations for multi-\/threaded use\+:}}
+
+
+\begin{DoxyItemize}
+\item Use a mutex for global synchronization.
+\item Create per-\/thread page families or memory managers.
+\item Apply fine-\/grained locking at the page-\/family level for concurrency.
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md68}{}\doxysection{\texorpdfstring{Performance Characteristics}{Performance Characteristics}}\label{md_docs_2pages_2architecture_autotoc_md68}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Operation   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Time Complexity   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Notes    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Operation   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Time Complexity   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Notes    }\\\cline{1-3}
+\endhead
+{\ttfamily XCALLOC}   &O(1) amortized   &O(n) when a new page is required.    \\\cline{1-3}
+{\ttfamily XFREE}   &O(1)   &Constant time to free a block.    \\\cline{1-3}
+Priority List Insert   &O(log n)   &Uses binary insertion for ordering.    \\\cline{1-3}
+Block Merge   &O(1)   &Only checks adjacent blocks.    \\\cline{1-3}
+Page Allocation   &O(1)   &{\ttfamily mmap} system call.   \\\cline{1-3}
+\end{longtabu}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md70}{}\doxysection{\texorpdfstring{Memory Layout}{Memory Layout}}\label{md_docs_2pages_2architecture_autotoc_md70}
+{\bfseries{Typical Memory Usage Example\+:}}
+
+
+\begin{DoxyItemize}
+\item {\bfseries{Structure size\+:}} 64 bytes
+\item {\bfseries{Page size\+:}} 4KB (4096 bytes)
+\end{DoxyItemize}
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Component   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Size   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Calculation    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Component   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Size   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Calculation    }\\\cline{1-3}
+\endhead
+{\bfseries{Page Overhead}}   &\texorpdfstring{$\sim$}{\string~} {\bfseries{128 bytes}}   &{\ttfamily vm\+\_\+page\+\_\+t} metadata    \\\cline{1-3}
+{\bfseries{Block Overhead}}   &\texorpdfstring{$\sim$}{\string~} {\bfseries{32 bytes}}   &Per block metadata    \\\cline{1-3}
+{\bfseries{Usable Space}}   &{\bfseries{3968 bytes}}   &{\ttfamily 4096 -\/ 128 = 3968}    \\\cline{1-3}
+{\bfseries{Block Size}}   &{\bfseries{96 bytes}}   &{\ttfamily 64 + 32 = 96} (data + metadata)    \\\cline{1-3}
+{\bfseries{Blocks per Page}}   &{\bfseries{41 blocks}}   &{\ttfamily 3968 / 96 ≈ 41}    \\\cline{1-3}
+{\bfseries{Memory Efficiency}}   &{\bfseries{64\%}}   &{\ttfamily (41 × 64) / 4096 ≈ 64\%}   \\\cline{1-3}
+\end{longtabu}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md72}{}\doxysection{\texorpdfstring{Future Enhancements}{Future Enhancements}}\label{md_docs_2pages_2architecture_autotoc_md72}
+Potential improvements for future versions include\+:
+
+
+\begin{DoxyEnumerate}
+\item Thread-\/safe allocator (lock-\/free or per-\/thread pools).
+\item Memory compaction for defragmentation.
+\item Allocation profiling and statistics collection.
+\item Configurable VM page sizes.
+\item Memory quotas per page family.
+\end{DoxyEnumerate}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2architecture_autotoc_md74}{}\doxysection{\texorpdfstring{Related Documentation}{Related Documentation}}\label{md_docs_2pages_2architecture_autotoc_md74}
+
+\begin{DoxyItemize}
+\item \doxysectlink{md_docs_2pages_2api__reference}{API Reference}{0}
+\item \doxysectlink{md_docs_2pages_2developer__guide}{Developer Guide}{0}
+\item \doxysectlink{md_docs_2pages_2user__guide}{User Guide}{0} 
+\end{DoxyItemize}

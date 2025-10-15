@@ -1,0 +1,344 @@
+\chapter{Developer Guide}
+\hypertarget{md_docs_2pages_2developer__guide}{}\label{md_docs_2pages_2developer__guide}\index{Developer Guide@{Developer Guide}}
+Developer guide for understanding and contributing to the Linux Memory Manager.
+
+\label{md_docs_2pages_2developer__guide_autotoc_md75}%
+\Hypertarget{md_docs_2pages_2developer__guide_autotoc_md75}%
+ \hypertarget{md_docs_2pages_2developer__guide_autotoc_md76}{}\doxysection{\texorpdfstring{Introduction for Developers}{Introduction for Developers}}\label{md_docs_2pages_2developer__guide_autotoc_md76}
+This guide is for developers who want to {\bfseries{understand}}, {\bfseries{modify}}, or {\bfseries{contribute}} to the Linux Memory Manager project. If you just want to use the library, see the \doxysectlink{md_docs_2pages_2user__guide}{User Guide}{0} instead.
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md78}{}\doxysection{\texorpdfstring{Development Setup}{Development Setup}}\label{md_docs_2pages_2developer__guide_autotoc_md78}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md79}{}\doxysubsection{\texorpdfstring{Requirements}{Requirements}}\label{md_docs_2pages_2developer__guide_autotoc_md79}
+
+\begin{DoxyItemize}
+\item {\bfseries{GCC 7.\+0+}} -\/ C compiler with C11 support
+\item {\bfseries{GNU Make}} -\/ Build automation
+\item {\bfseries{Git}} -\/ Version control
+\item {\bfseries{Doxygen 1.\+9+}} -\/ Documentation generation (optional)
+\item {\bfseries{Graphviz}} -\/ Diagram generation (optional)
+\item {\bfseries{Valgrind}} -\/ Memory leak detection (optional)
+\end{DoxyItemize}\hypertarget{md_docs_2pages_2developer__guide_autotoc_md80}{}\doxysubsection{\texorpdfstring{Clone Repository}{Clone Repository}}\label{md_docs_2pages_2developer__guide_autotoc_md80}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ clone\ https://github.com/orcalinux/linux-\/memory-\/manager.git}
+\DoxyCodeLine{cd\ linux-\/memory-\/manager}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md81}{}\doxysubsection{\texorpdfstring{Build Everything}{Build Everything}}\label{md_docs_2pages_2developer__guide_autotoc_md81}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Build\ all\ targets}
+\DoxyCodeLine{make\ all}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Or\ build\ individually}
+\DoxyCodeLine{make\ static\ \#\ Build\ static\ library\ only}
+\DoxyCodeLine{make\ shared\ \#\ Build\ shared\ library\ only}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md83}{}\doxysection{\texorpdfstring{Architecture Overview}{Architecture Overview}}\label{md_docs_2pages_2developer__guide_autotoc_md83}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md84}{}\doxysubsection{\texorpdfstring{Core Components}{Core Components}}\label{md_docs_2pages_2developer__guide_autotoc_md84}
+The memory manager consists of several key components\+:
+
+
+\begin{DoxyEnumerate}
+\item {\bfseries{VM Page Manager}} (\doxylink{memory__manager_8c}{memory\+\_\+manager.\+c})
+\begin{DoxyItemize}
+\item Manages virtual memory pages from the kernel
+\item Implements page families for different data types
+\item Handles page allocation and deallocation
+\end{DoxyItemize}
+\item {\bfseries{Block Allocator}} (\doxylink{memory__manager_8c}{memory\+\_\+manager.\+c})
+\begin{DoxyItemize}
+\item Divides pages into fixed-\/size blocks
+\item Maintains free block lists
+\item Implements block splitting and merging
+\end{DoxyItemize}
+\item {\bfseries{GLThread}} (\doxylink{glthread_8c}{glthread.\+c})
+\begin{DoxyItemize}
+\item Generic intrusive linked list
+\item Thread-\/safe operations
+\item Zero-\/overhead abstraction
+\end{DoxyItemize}
+\item {\bfseries{Type Registry}} (\doxylink{datatype__size__lookup_8c}{datatype\+\_\+size\+\_\+lookup.\+c})
+\begin{DoxyItemize}
+\item Maps type names to sizes
+\item Enables dynamic type registration
+\item Used by XCALLOC/\+XFREE macros
+\end{DoxyItemize}
+\end{DoxyEnumerate}\hypertarget{md_docs_2pages_2developer__guide_autotoc_md85}{}\doxysubsection{\texorpdfstring{Memory Model}{Memory Model}}\label{md_docs_2pages_2developer__guide_autotoc_md85}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md87}{}\doxysection{\texorpdfstring{Code Organization}{Code Organization}}\label{md_docs_2pages_2developer__guide_autotoc_md87}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md88}{}\doxysubsection{\texorpdfstring{File Organization}{File Organization}}\label{md_docs_2pages_2developer__guide_autotoc_md88}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{src/}
+\DoxyCodeLine{├──\ memory\_manager.c\ \ \ \ \ \ \ \ \ \ \ \#\ Core\ memory\ management}
+\DoxyCodeLine{├──\ glthread.c\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Linked\ list\ implementation}
+\DoxyCodeLine{├──\ datatype\_size\_lookup.c\ \ \ \ \ \#\ Type\ size\ registry}
+\DoxyCodeLine{├──\ parse\_datatype.c\ \ \ \ \ \ \ \ \ \ \ \#\ Type\ name\ parsing}
+\DoxyCodeLine{└──\ memory\_manager\_test.c\ \ \ \ \ \ \#\ Test\ suite}
+\DoxyCodeLine{}
+\DoxyCodeLine{include/}
+\DoxyCodeLine{├──\ memory\_manager\_api.h\ \ \ \ \ \ \ \#\ Public\ API\ (users\ include\ this)}
+\DoxyCodeLine{├──\ memory\_manager.h\ \ \ \ \ \ \ \ \ \ \ \#\ Internal\ structures}
+\DoxyCodeLine{├──\ glthread.h\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ GLThread\ API}
+\DoxyCodeLine{├──\ datatype\_size\_lookup.h\ \ \ \ \ \#\ Type\ registry\ API}
+\DoxyCodeLine{├──\ parse\_datatype.h\ \ \ \ \ \ \ \ \ \ \ \#\ Parser\ API}
+\DoxyCodeLine{└──\ colors.h\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Terminal\ output\ utilities}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md89}{}\doxysubsection{\texorpdfstring{Header Dependencies}{Header Dependencies}}\label{md_docs_2pages_2developer__guide_autotoc_md89}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md90}{}\doxysection{\texorpdfstring{Building \& Testing}{Building \& Testing}}\label{md_docs_2pages_2developer__guide_autotoc_md90}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md91}{}\doxysubsection{\texorpdfstring{Makefile Targets}{Makefile Targets}}\label{md_docs_2pages_2developer__guide_autotoc_md91}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{2}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Target   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Target   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Description    }\\\cline{1-2}
+\endhead
+{\ttfamily make all}   &Build executable and libraries    \\\cline{1-2}
+{\ttfamily make static}   &Build static library (libhmm.\+a)    \\\cline{1-2}
+{\ttfamily make shared}   &Build shared library (libhmm.\+so)    \\\cline{1-2}
+{\ttfamily make clean\+\_\+all}   &Remove all build artifacts    \\\cline{1-2}
+{\ttfamily make clean\+\_\+obj}   &Remove object files only    \\\cline{1-2}
+{\ttfamily make doc}   &Generate Doxygen documentation    \\\cline{1-2}
+{\ttfamily make clean\+\_\+doc}   &Remove generated documentation   \\\cline{1-2}
+\end{longtabu}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md92}{}\doxysubsection{\texorpdfstring{Testing}{Testing}}\label{md_docs_2pages_2developer__guide_autotoc_md92}
+{\bfseries{Run the test suite\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./bin/hmm}
+
+\end{DoxyCode}
+
+
+{\bfseries{Run with Valgrind (detect memory leaks)\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{valgrind\ -\/-\/leak-\/check=full\ -\/-\/show-\/leak-\/kinds=all\ ./bin/hmm}
+
+\end{DoxyCode}
+
+
+{\bfseries{Run with Address\+Sanitizer\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc\ -\/fsanitize=address\ -\/g\ src/*.c\ -\/o\ bin/hmm\_asan}
+\DoxyCodeLine{./bin/hmm\_asan}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md94}{}\doxysection{\texorpdfstring{Contributing}{Contributing}}\label{md_docs_2pages_2developer__guide_autotoc_md94}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md95}{}\doxysubsection{\texorpdfstring{Contribution Workflow}{Contribution Workflow}}\label{md_docs_2pages_2developer__guide_autotoc_md95}
+
+\begin{DoxyEnumerate}
+\item {\bfseries{Fork the repository}} on Git\+Hub
+\item {\bfseries{Create a feature branch\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ checkout\ -\/b\ feature/my-\/new-\/feature}
+
+\end{DoxyCode}
+
+\item {\bfseries{Make your changes}} and commit\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ add\ .}
+\DoxyCodeLine{git\ commit\ -\/m\ "{}Add\ new\ feature:\ description"{}}
+
+\end{DoxyCode}
+
+\item {\bfseries{Push to your fork\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git\ push\ origin\ feature/my-\/new-\/feature}
+
+\end{DoxyCode}
+
+\item {\bfseries{Open a Pull Request}} on Git\+Hub
+\end{DoxyEnumerate}\hypertarget{md_docs_2pages_2developer__guide_autotoc_md96}{}\doxysubsection{\texorpdfstring{Coding Guidelines}{Coding Guidelines}}\label{md_docs_2pages_2developer__guide_autotoc_md96}
+{\bfseries{Style Rules\+:}}
+
+
+\begin{DoxyItemize}
+\item Use 4 spaces for indentation (no tabs)
+\item Maximum line length\+: 80 characters
+\item Use snake\+\_\+case for functions and variables
+\item Use UPPER\+\_\+\+CASE for macros and constants
+\item Add Doxygen comments for all public functions
+\end{DoxyItemize}
+
+{\bfseries{Example\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}*\ mm\_allocate(\textcolor{keywordtype}{size\_t}\ size)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Implementation}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md97}{}\doxysubsection{\texorpdfstring{Commit Messages}{Commit Messages}}\label{md_docs_2pages_2developer__guide_autotoc_md97}
+Follow this format\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{<type>:\ <subject>}
+\DoxyCodeLine{}
+\DoxyCodeLine{<body>}
+\DoxyCodeLine{}
+\DoxyCodeLine{<footer>}
+
+\end{DoxyCode}
+
+
+{\bfseries{Types\+:}}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily feat\+:} New feature
+\item {\ttfamily fix\+:} Bug fix
+\item {\ttfamily docs\+:} Documentation changes
+\item {\ttfamily refactor\+:} Code refactoring
+\item {\ttfamily test\+:} Adding tests
+\item {\ttfamily chore\+:} Maintenance tasks
+\end{DoxyItemize}
+
+{\bfseries{Example\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{feat:\ Add\ memory\ fragmentation\ analysis}
+\DoxyCodeLine{}
+\DoxyCodeLine{Implement\ mm\_get\_fragmentation\_ratio()\ to\ analyze\ internal}
+\DoxyCodeLine{fragmentation\ across\ all\ page\ families.}
+\DoxyCodeLine{}
+\DoxyCodeLine{Closes\ \#42}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md99}{}\doxysection{\texorpdfstring{Debugging}{Debugging}}\label{md_docs_2pages_2developer__guide_autotoc_md99}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md100}{}\doxysubsection{\texorpdfstring{Build with Debug Symbols}{Build with Debug Symbols}}\label{md_docs_2pages_2developer__guide_autotoc_md100}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{gcc\ -\/g\ -\/O0\ src/*.c\ -\/o\ bin/hmm\_debug}
+\DoxyCodeLine{gdb\ bin/hmm\_debug}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md101}{}\doxysubsection{\texorpdfstring{Memory Debugging}{Memory Debugging}}\label{md_docs_2pages_2developer__guide_autotoc_md101}
+{\bfseries{Enable verbose output\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#define\ MM\_DEBUG\ 1}}
+
+\end{DoxyCode}
+
+
+{\bfseries{Print memory state\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{memory__manager__api_8h_a2c4fac0b5d1557530ea878cf4b84082b}{mm\_print\_registered\_page\_families}}();}
+\DoxyCodeLine{\mbox{\hyperlink{memory__manager__api_8h_a0107300bfc4db599504abef54c980fa6}{mm\_print\_memory\_usage}}(MyStruct);}
+\DoxyCodeLine{\mbox{\hyperlink{memory__manager_8h_a0a1f3a9753facffae61a89ed4ad4ff68}{mm\_print\_vm\_page\_details}}();}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md103}{}\doxysection{\texorpdfstring{Advanced Topics}{Advanced Topics}}\label{md_docs_2pages_2developer__guide_autotoc_md103}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md104}{}\doxysubsection{\texorpdfstring{Understanding GLThread}{Understanding GLThread}}\label{md_docs_2pages_2developer__guide_autotoc_md104}
+GLThread is an intrusive linked list implementation. Each structure contains the list node\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{int}\ data;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structglthread__}{glthread\_t}}\ list\_node;\ \ \textcolor{comment}{//\ Intrusive\ list\ node}}
+\DoxyCodeLine{\}\ MyStruct;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{comment}{//\ Convert\ from\ list\ node\ to\ structure}}
+\DoxyCodeLine{MyStruct\ *s\ =\ \mbox{\hyperlink{glthread_8h_a46e14b66e90bb61bc6fce5e45a753d69}{GLTHREAD\_TO\_STRUCT}}(node,\ MyStruct,\ list\_node);}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md105}{}\doxysubsection{\texorpdfstring{Page Families}{Page Families}}\label{md_docs_2pages_2developer__guide_autotoc_md105}
+Each data type gets its own "{}page family"{}\+:
+
+
+\begin{DoxyItemize}
+\item Pages are allocated from the kernel
+\item Each page is divided into fixed-\/size blocks
+\item Free blocks are tracked in a priority list
+\end{DoxyItemize}\hypertarget{md_docs_2pages_2developer__guide_autotoc_md106}{}\doxysubsection{\texorpdfstring{Block Metadata}{Block Metadata}}\label{md_docs_2pages_2developer__guide_autotoc_md106}
+Each allocated block has metadata\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{typedef}\ \textcolor{keyword}{struct\ }\{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordtype}{bool}\ is\_free;}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ block\_size;}
+\DoxyCodeLine{\ \ \ \ uint32\_t\ offset;}
+\DoxyCodeLine{\ \ \ \ \mbox{\hyperlink{structglthread__}{glthread\_t}}\ priority\_thread\_glue;}
+\DoxyCodeLine{\ \ \ \ \textcolor{keyword}{struct\ }vm\_page*\ *vm\_page;}
+\DoxyCodeLine{\}\ \mbox{\hyperlink{memory__manager_8h_a173309530f1b69ddabf71b33b75baf9f}{block\_meta\_data\_t}};}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md108}{}\doxysection{\texorpdfstring{Extending the Library}{Extending the Library}}\label{md_docs_2pages_2developer__guide_autotoc_md108}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md109}{}\doxysubsection{\texorpdfstring{Custom Allocators}{Custom Allocators}}\label{md_docs_2pages_2developer__guide_autotoc_md109}
+You can implement custom allocation strategies\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}*\ my\_custom\_alloc(\textcolor{keywordtype}{size\_t}\ size)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Custom\ allocation\ logic}}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ mm\_allocate\_free\_data\_block(family);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md110}{}\doxysubsection{\texorpdfstring{Memory Hooks}{Memory Hooks}}\label{md_docs_2pages_2developer__guide_autotoc_md110}
+Add callbacks for allocation/deallocation events\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keywordtype}{void}\ on\_alloc(\textcolor{keywordtype}{void}\ *ptr,\ \textcolor{keywordtype}{size\_t}\ size)\ \{}
+\DoxyCodeLine{\ \ \ \ printf(\textcolor{stringliteral}{"{}Allocated\ \%zu\ bytes\ at\ \%p\(\backslash\)n"{}},\ size,\ ptr);}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2developer__guide_autotoc_md112}{}\doxysection{\texorpdfstring{Resources}{Resources}}\label{md_docs_2pages_2developer__guide_autotoc_md112}
+
+\begin{DoxyItemize}
+\item \doxysectlink{md_docs_2pages_2api__reference}{API Reference}{0} -\/ Complete function documentation
+\item \doxysectlink{md_docs_2pages_2architecture}{Architecture}{0} -\/ System design details
+\item \doxysectlink{md_docs_2pages_2user__guide}{Testing Guide}{0} -\/ How to write and run tests
+\item \href{https://github.com/orcalinux/linux-memory-manager}{\texttt{ Git\+Hub Repository}}
+\item \href{https://github.com/orcalinux/linux-memory-manager/issues}{\texttt{ Issue Tracker}} 
+\end{DoxyItemize}

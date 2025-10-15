@@ -1,0 +1,63 @@
+\doxysection{src/parse\+\_\+datatype.c File Reference}
+\hypertarget{parse__datatype_8c}{}\label{parse__datatype_8c}\index{src/parse\_datatype.c@{src/parse\_datatype.c}}
+
+
+Extracts a data type name from a string containing the sizeof operator.  
+
+
+{\ttfamily \#include "{}parse\+\_\+datatype.\+h"{}}\newline
+Include dependency graph for parse\+\_\+datatype.\+c\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{parse__datatype_8c__incl}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{parse__datatype_8c_a951929580735bed45579ce79ea1d6c71}{parse\+\_\+struct\+\_\+name}} (char \texorpdfstring{$\ast$}{*}struct\+\_\+name, char \texorpdfstring{$\ast$}{*}buffer, uint8\+\_\+t \texorpdfstring{$\ast$}{*}error\+\_\+flag)
+\begin{DoxyCompactList}\small\item\em Parses a structure name from a string. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Extracts a data type name from a string containing the sizeof operator. 
+
+This program demonstrates how to extract a data type name from a string containing the sizeof operator using the sscanf function in C. 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{parse__datatype_8c_a951929580735bed45579ce79ea1d6c71}\label{parse__datatype_8c_a951929580735bed45579ce79ea1d6c71} 
+\index{parse\_datatype.c@{parse\_datatype.c}!parse\_struct\_name@{parse\_struct\_name}}
+\index{parse\_struct\_name@{parse\_struct\_name}!parse\_datatype.c@{parse\_datatype.c}}
+\doxysubsubsection{\texorpdfstring{parse\_struct\_name()}{parse\_struct\_name()}}
+{\footnotesize\ttfamily char \texorpdfstring{$\ast$}{*} parse\+\_\+struct\+\_\+name (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{struct\+\_\+name,  }\item[{char \texorpdfstring{$\ast$}{*}}]{buffer,  }\item[{uint8\+\_\+t \texorpdfstring{$\ast$}{*}}]{error\+\_\+flag }\end{DoxyParamCaption})}
+
+
+
+Parses a structure name from a string. 
+
+Parses the name of a struct from a string.
+
+This function parses a structure name from a string, typically in the form of sizeof(struct\+\_\+name).
+
+
+\begin{DoxyParams}{Parameters}
+{\em struct\+\_\+name} & The input string containing the structure name. \\
+\hline
+{\em buffer} & The buffer to store the parsed structure name. \\
+\hline
+{\em error\+\_\+flag} & Pointer to an error flag. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Pointer to the buffer containing the parsed structure name. 
+\end{DoxyReturn}
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=277pt]{parse__datatype_8c_a951929580735bed45579ce79ea1d6c71_icgraph}
+\end{center}
+\end{figure}
