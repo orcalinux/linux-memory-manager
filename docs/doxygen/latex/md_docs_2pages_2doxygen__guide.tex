@@ -1,0 +1,399 @@
+\chapter{Doxygen Documentation Guide}
+\hypertarget{md_docs_2pages_2doxygen__guide}{}\label{md_docs_2pages_2doxygen__guide}\index{Doxygen Documentation Guide@{Doxygen Documentation Guide}}
+Guide for setting up and using Doxygen for project documentation.
+
+\label{md_docs_2pages_2doxygen__guide_autotoc_md113}%
+\Hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md113}%
+ \hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md114}{}\doxysection{\texorpdfstring{Introduction}{Introduction}}\label{md_docs_2pages_2doxygen__guide_autotoc_md114}
+This guide provides detailed instructions on how to set up and use Doxygen to generate professional and comprehensive documentation for your project.
+
+\begin{quote}
+{\bfseries{📚 About Doxygen\+:}} Doxygen is a powerful tool that can produce high-\/quality documentation from annotated C/\+C++ sources, making it a critical tool in any developer\textquotesingle{}s toolkit. \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md115}{}\doxysection{\texorpdfstring{$<$/blockquote$>$}{</blockquote>}}\label{md_docs_2pages_2doxygen__guide_autotoc_md115}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md116}{}\doxysection{\texorpdfstring{Installation}{Installation}}\label{md_docs_2pages_2doxygen__guide_autotoc_md116}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md117}{}\doxysubsection{\texorpdfstring{Install Doxygen}{Install Doxygen}}\label{md_docs_2pages_2doxygen__guide_autotoc_md117}
+To begin using Doxygen, install it on your system\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo\ apt-\/get\ install\ -\/y\ doxygen}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md118}{}\doxysubsection{\texorpdfstring{Install Graphviz (\+Optional)}{Install Graphviz (Optional)}}\label{md_docs_2pages_2doxygen__guide_autotoc_md118}
+If you plan to generate diagrams and charts, you will need Graphviz\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo\ apt-\/get\ install\ -\/y\ graphviz}
+
+\end{DoxyCode}
+
+
+\begin{quote}
+{\bfseries{✅ Verification\+:}} After installation, verify with\+: {\ttfamily doxygen -\/-\/version} \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md119}{}\doxysection{\texorpdfstring{$<$/blockquote$>$}{</blockquote>}}\label{md_docs_2pages_2doxygen__guide_autotoc_md119}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md120}{}\doxysection{\texorpdfstring{Configuration Setup}{Configuration Setup}}\label{md_docs_2pages_2doxygen__guide_autotoc_md120}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md121}{}\doxysubsection{\texorpdfstring{Generate Configuration File}{Generate Configuration File}}\label{md_docs_2pages_2doxygen__guide_autotoc_md121}
+Run the following command to create a {\ttfamily Doxyfile} configuration\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{doxygen\ -\/g}
+
+\end{DoxyCode}
+
+
+This creates a default {\ttfamily Doxyfile} with all available options.\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md122}{}\doxysubsection{\texorpdfstring{Essential Configuration Options}{Essential Configuration Options}}\label{md_docs_2pages_2doxygen__guide_autotoc_md122}
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Option   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Option   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Value   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Purpose    }\\\cline{1-3}
+\endhead
+{\ttfamily PROJECT\+\_\+\+NAME}   &"{}\+My\+\_\+\+Project"{}   &Name displayed in documentation    \\\cline{1-3}
+{\ttfamily PROJECT\+\_\+\+BRIEF}   &"{}\+Project description"{}   &Short description shown on main page    \\\cline{1-3}
+{\ttfamily INPUT}   &src include   &Directories to scan for source files    \\\cline{1-3}
+{\ttfamily RECURSIVE}   &YES   &Recursively search input directories    \\\cline{1-3}
+{\ttfamily OUTPUT\+\_\+\+DIRECTORY}   &docs/output   &Where to place generated documentation   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md123}{}\doxysubsection{\texorpdfstring{C Language Optimization}{C Language Optimization}}\label{md_docs_2pages_2doxygen__guide_autotoc_md123}
+For C projects, add these settings\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Optimize\ output\ for\ C}
+\DoxyCodeLine{OPTIMIZE\_OUTPUT\_FOR\_C\ =\ YES}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Extract\ all\ documentation}
+\DoxyCodeLine{EXTRACT\_ALL\ =\ YES}
+\DoxyCodeLine{EXTRACT\_STATIC\ =\ YES}
+\DoxyCodeLine{EXTRACT\_PRIVATE\ =\ YES}
+
+\end{DoxyCode}
+
+
+\begin{quote}
+{\bfseries{💡 Tip\+:}} {\ttfamily EXTRACT\+\_\+\+ALL = YES} generates documentation even for undocumented code. \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md124}{}\doxysubsection{\texorpdfstring{Source Code Browser}{Source Code Browser}}\label{md_docs_2pages_2doxygen__guide_autotoc_md124}
+Enable source code browsing\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Generate\ source\ browser}
+\DoxyCodeLine{SOURCE\_BROWSER\ =\ YES}
+\DoxyCodeLine{INLINE\_SOURCES\ =\ YES}
+\DoxyCodeLine{STRIP\_CODE\_COMMENTS\ =\ NO}
+
+\end{DoxyCode}
+
+
+\begin{quote}
+{\bfseries{SOURCE\+\_\+\+BROWSER = YES}} ~\newline
+ Generates hyperlinked source code ~\newline
+ ↓ ~\newline
+ {\bfseries{INLINE\+\_\+\+SOURCES = YES}} ~\newline
+ Includes source code in documentation ~\newline
+ ↓ ~\newline
+ {\bfseries{STRIP\+\_\+\+CODE\+\_\+\+COMMENTS = NO}} ~\newline
+ Preserves comments in code listings \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md125}{}\doxysubsection{\texorpdfstring{Graphviz Integration}{Graphviz Integration}}\label{md_docs_2pages_2doxygen__guide_autotoc_md125}
+Enable diagram generation\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ Enable\ Graphviz\ for\ generating\ diagrams}
+\DoxyCodeLine{HAVE\_DOT\ =\ YES}
+\DoxyCodeLine{DOT\_NUM\_THREADS\ =\ 4}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Generate\ call\ graphs\ and\ caller\ graphs}
+\DoxyCodeLine{CALL\_GRAPH\ =\ YES}
+\DoxyCodeLine{CALLER\_GRAPH\ =\ YES}
+\DoxyCodeLine{CLASS\_DIAGRAMS\ =\ YES}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\bfseries{📊 CALL\+\_\+\+GRAPH}} ~\newline
+ Shows which functions a given function calls
+\item {\bfseries{📈 CALLER\+\_\+\+GRAPH}} ~\newline
+ Shows which functions call a given function
+\item {\bfseries{🏗️ CLASS\+\_\+\+DIAGRAMS}} ~\newline
+ Generates inheritance and collaboration diagrams
+\end{DoxyItemize}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md126}{}\doxysubsection{\texorpdfstring{Output Formats}{Output Formats}}\label{md_docs_2pages_2doxygen__guide_autotoc_md126}
+Configure output formats\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#\ HTML\ output}
+\DoxyCodeLine{GENERATE\_HTML\ =\ YES}
+\DoxyCodeLine{HTML\_OUTPUT\ =\ html}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ LaTeX/PDF\ output}
+\DoxyCodeLine{GENERATE\_LATEX\ =\ YES}
+\DoxyCodeLine{LATEX\_OUTPUT\ =\ latex}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Man\ pages}
+\DoxyCodeLine{GENERATE\_MAN\ =\ NO}
+
+\end{DoxyCode}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md128}{}\doxysection{\texorpdfstring{Running Doxygen}{Running Doxygen}}\label{md_docs_2pages_2doxygen__guide_autotoc_md128}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md129}{}\doxysubsection{\texorpdfstring{Basic Usage}{Basic Usage}}\label{md_docs_2pages_2doxygen__guide_autotoc_md129}
+After configuring the {\ttfamily Doxyfile}, generate your documentation\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{doxygen\ Doxyfile}
+
+\end{DoxyCode}
+
+
+\begin{quote}
+{\bfseries{✅ Output Location\+:}} Generated files will be in {\ttfamily OUTPUT\+\_\+\+DIRECTORY/html/index.\+html} \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md130}{}\doxysubsection{\texorpdfstring{Makefile Integration}{Makefile Integration}}\label{md_docs_2pages_2doxygen__guide_autotoc_md130}
+Add a documentation target to your Makefile\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{.PHONY:\ doc\ clean\_doc}
+\DoxyCodeLine{}
+\DoxyCodeLine{doc:}
+\DoxyCodeLine{\ \ \ \ doxygen\ Doxyfile}
+\DoxyCodeLine{\ \ \ \ @echo\ "{}Documentation\ generated\ in\ html/"{}}
+\DoxyCodeLine{}
+\DoxyCodeLine{clean\_doc:}
+\DoxyCodeLine{\ \ \ \ rm\ -\/rf\ html/\ latex/\ man/}
+\DoxyCodeLine{}
+\DoxyCodeLine{all:\ build\ doc}
+
+\end{DoxyCode}
+
+
+
+\begin{DoxyItemize}
+\item {\ttfamily make doc} — Generate documentation
+\item {\ttfamily make clean\+\_\+doc} — Remove generated files
+\item {\ttfamily make all} — Build project and documentation
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md132}{}\doxysection{\texorpdfstring{Advanced Features}{Advanced Features}}\label{md_docs_2pages_2doxygen__guide_autotoc_md132}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md133}{}\doxysubsection{\texorpdfstring{Setting Up the Main Page}{Setting Up the Main Page}}\label{md_docs_2pages_2doxygen__guide_autotoc_md133}
+Use a markdown file as your main page\+:
+
+{\bfseries{1. Create \doxylink{README_8md}{README.\+md}\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{@mainpage\ Linux\ Memory\ Manager}
+\DoxyCodeLine{}
+\DoxyCodeLine{@section\ intro\_sec\ Introduction}
+\DoxyCodeLine{This\ is\ the\ main\ documentation\ page...}
+\DoxyCodeLine{}
+\DoxyCodeLine{@section\ install\_sec\ Installation}
+\DoxyCodeLine{Instructions\ for\ building...}
+
+\end{DoxyCode}
+
+
+{\bfseries{2. Configure Doxyfile\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{USE\_MDFILE\_AS\_MAINPAGE\ =\ README.md}
+
+\end{DoxyCode}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md134}{}\doxysubsection{\texorpdfstring{Creating Documentation Pages}{Creating Documentation Pages}}\label{md_docs_2pages_2doxygen__guide_autotoc_md134}
+Create separate pages using {\ttfamily @page} directive\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+
+\end{DoxyCode}
+
+
+\begin{quote}
+{\bfseries{💡 Navigation\+:}} Use {\ttfamily @ref} to link between pages\+: {\ttfamily @ref user\+\_\+guide "{}\+User Guide"{}} \end{quote}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md135}{}\doxysubsection{\texorpdfstring{Documentation Comments}{Documentation Comments}}\label{md_docs_2pages_2doxygen__guide_autotoc_md135}
+Doxygen recognizes several comment styles\+:
+
+\tabulinesep=1mm
+\begin{longtabu}spread 0pt [c]{*{3}{|X[-1]}|}
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Style   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Example   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Use Case    }\\\cline{1-3}
+\endfirsthead
+\hline
+\endfoot
+\hline
+\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Style   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Example   }&\PBS\centering \cellcolor{\tableheadbgcolor}\textbf{ Use Case    }\\\cline{1-3}
+\endhead
+Java\+Doc (C)   &{\ttfamily /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} ... \texorpdfstring{$\ast$}{*}/}   &Functions, structs, files    \\\cline{1-3}
+Qt Style   &{\ttfamily /\texorpdfstring{$\ast$}{*}! ... \texorpdfstring{$\ast$}{*}/}   &Alternative to Java\+Doc    \\\cline{1-3}
+Single Line   &{\ttfamily /// comment}   &Brief inline documentation    \\\cline{1-3}
+After Member   &{\ttfamily /\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}\texorpdfstring{$<$}{<} ... \texorpdfstring{$\ast$}{*}/}   &Document struct members   \\\cline{1-3}
+\end{longtabu}
+\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md136}{}\doxysubsection{\texorpdfstring{Common Doxygen Tags}{Common Doxygen Tags}}\label{md_docs_2pages_2doxygen__guide_autotoc_md136}
+
+\begin{DoxyItemize}
+\item {\bfseries{ }} ~\newline
+ Brief description (one line)
+\item {\bfseries{
+\begin{DoxyParams}{Parameters}
+{\em $<$/strong$>$} & ~\newline
+ Document function parameters\\
+\hline
+\end{DoxyParams}
+}}
+\item {\bfseries{{\bfseries{\begin{DoxyReturn}{Returns}
+~\newline
+ Document return value
+\end{DoxyReturn}
+}}}}
+\item {\bfseries{{\bfseries{\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+\texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*} ~\newline
+ Include code examples}}}}
+\item {\bfseries{{\bfseries{{\bfseries{\begin{DoxyNote}{Note}
+~\newline
+ Add important notes
+\end{DoxyNote}
+}}}}}}
+\item {\bfseries{{\bfseries{{\bfseries{{\bfseries{\begin{DoxyWarning}{Warning}
+~\newline
+ Highlight warnings
+\end{DoxyWarning}
+{\bfseries{Example\+:}}}}}}}}}}
+\end{DoxyItemize}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyCode}{0}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{void}*\ \mbox{\hyperlink{memory__manager__api_8h_a3a295a457410e0dd9a09f7dc73e3b78e}{XCALLOC}}(\textcolor{keywordtype}{size\_t}\ count,\ \textcolor{keywordtype}{size\_t}\ size);}
+
+\end{DoxyCode}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{\DoxyHorRuler{0}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md138}{}\doxysection{\texorpdfstring{Customizing with Themes}{Customizing with Themes}}\label{md_docs_2pages_2doxygen__guide_autotoc_md138}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md139}{}\doxysubsection{\texorpdfstring{Doxygen-\/\+Awesome Theme}{Doxygen-Awesome Theme}}\label{md_docs_2pages_2doxygen__guide_autotoc_md139}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{Install modern CSS theme for better appearance\+:}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{{\bfseries{1. Install theme\+:}}}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd\ docs}
+\DoxyCodeLine{git\ clone\ https://github.com/jothepro/doxygen-\/awesome-\/css.git\ theme/doxygen-\/awesome}
+
+\end{DoxyCode}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{{\bfseries{2. Configure Doxyfile\+:}}}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyCode}{0}
+\DoxyCodeLine{GENERATE\_TREEVIEW\ =\ YES}
+\DoxyCodeLine{HTML\_EXTRA\_STYLESHEET\ =\ docs/theme/doxygen-\/awesome/doxygen-\/awesome.css}
+\DoxyCodeLine{HTML\_COLORSTYLE\ =\ TOGGLE}
+
+\end{DoxyCode}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{{\bfseries{3. Add custom header (optional)\+:}}}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyCode}{0}
+\DoxyCodeLine{HTML\_HEADER\ =\ docs/header.html}
+
+\end{DoxyCode}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{\begin{quote}
+{\bfseries{✅ Features\+:}}
+
+
+\begin{DoxyItemize}
+\item Dark mode toggle
+\item Copy code buttons
+\item Responsive design
+\item Interactive table of contents--- 
+\end{DoxyItemize}\end{quote}
+}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md140}{}\doxysection{\texorpdfstring{Troubleshooting}{Troubleshooting}}\label{md_docs_2pages_2doxygen__guide_autotoc_md140}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{\begin{quote}
+{\bfseries{⚠️ Common Issues\+:}} ~\newline
+ {\bfseries{Problem\+:}} No documentation generated ~\newline
+ {\bfseries{Solution\+:}} Check {\ttfamily INPUT} paths are correct and {\ttfamily RECURSIVE = YES} ~\newline
+ {\bfseries{Problem\+:}} Graphviz diagrams not showing ~\newline
+ {\bfseries{Solution\+:}} Install Graphviz and set {\ttfamily HAVE\+\_\+\+DOT = YES} ~\newline
+ {\bfseries{Problem\+:}} Theme files not loading ~\newline
+ {\bfseries{Solution\+:}} Verify {\ttfamily HTML\+\_\+\+EXTRA\+\_\+\+STYLESHEET} path is relative to Doxyfile ~\newline
+ {\bfseries{Problem\+:}} Main page not showing ~\newline
+ {\bfseries{Solution\+:}} Ensure {\ttfamily USE\+\_\+\+MDFILE\+\_\+\+AS\+\_\+\+MAINPAGE} points to correct file \end{quote}
+}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md141}{}\doxysection{\texorpdfstring{$<$/blockquote$>$}{</blockquote>}}\label{md_docs_2pages_2doxygen__guide_autotoc_md141}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md142}{}\doxysection{\texorpdfstring{Best Practices}{Best Practices}}\label{md_docs_2pages_2doxygen__guide_autotoc_md142}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyItemize}
+\item {\bfseries{📝 Document as You Code}} ~\newline
+ Write documentation comments while writing code, not after
+\item {\bfseries{🎯 Be Concise}} ~\newline
+ Keep descriptions to one line, expand in full description
+\item {\bfseries{💡 Use Examples}} ~\newline
+ Include code blocks with practical usage examples
+\item {\bfseries{🔗 Cross-\/\+Reference}} ~\newline
+ Use  \begin{DoxySeeAlso}{See also}
+, 
+
+to link related documentation
+\end{DoxySeeAlso}
+
+\item {\bfseries{⚠️ Highlight Warnings}} ~\newline
+ Use \begin{DoxyWarning}{Warning}
+, 
+\end{DoxyWarning}
+\begin{DoxyNote}{Note}
+, 
+\end{DoxyNote}
+\begin{DoxyAttention}{Attention}
+for important information
+\end{DoxyAttention}
+
+\item {\bfseries{🔄 Keep Updated}} ~\newline
+ Update documentation when changing code behavior
+\end{DoxyItemize}}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{\DoxyHorRuler{0}
+}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}\hypertarget{md_docs_2pages_2doxygen__guide_autotoc_md144}{}\doxysection{\texorpdfstring{Related Documentation}{Related Documentation}}\label{md_docs_2pages_2doxygen__guide_autotoc_md144}
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{}}}}}}}}
+
+{\bfseries{{\bfseries{{\bfseries{{\bfseries{
+\begin{DoxyItemize}
+\item \doxysectlink{md_docs_2pages_2developer__guide}{Developer Guide}{0} -\/ Contributing to documentation
+\item \doxysectlink{md_docs_2pages_2user__guide}{User Guide}{0} -\/ Using the documented library
+\item \doxysectlink{md_docs_2pages_2api__reference}{API Reference}{0} -\/ Generated API documentation 
+\end{DoxyItemize}}}}}}}}}
