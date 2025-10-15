@@ -36,6 +36,10 @@ jobs:
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v3
         with:
+          # If repository write is restricted for GITHUB_TOKEN, create a
+          # personal access token (GH_PAGES_PAT) with `repo` scope and add it
+          # to repository secrets. If provided, the action will use this token.
+          personal_token: ${{ secrets.GH_PAGES_PAT }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./docs/doxygen/html
           publish_branch: gh-pages
