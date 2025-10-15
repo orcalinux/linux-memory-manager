@@ -18,7 +18,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          # don't attempt to fetch submodules (some submodule URLs are not configured)
+          submodules: false
+          # full history can help some tools; set to 0 to fetch all history
+          fetch-depth: 0
 
       - name: Install dependencies
         run: |
